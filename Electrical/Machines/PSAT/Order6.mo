@@ -23,9 +23,9 @@ model Order6 "6th order machine model"
     annotation (Dialog(group="Machine parameters"));
 
   Types.PerUnit e1q(start=e1q0, fixed=true) "q-axis transient voltage";
-  Types.PerUnit e1d(start=e1d0) "d-axis transient voltage";
+  Types.PerUnit e1d(start=e1d0, fixed=true) "d-axis transient voltage";
   Types.PerUnit e2q(start=e2q0, fixed=true) "q-axis sub-transient voltage";
-  Types.PerUnit e2d(start=e2d0) "d-axis sub-transient voltage";
+  Types.PerUnit e2d(start=e2d0, fixed=true) "d-axis sub-transient voltage";
 protected
   parameter Types.PerUnit e2q0=vq0 + ra*iq0 + x2d*id0 "Initialization";
   parameter Types.PerUnit e2d0=vd0 + ra*id0 - x2q*iq0 "Initialization";
@@ -36,10 +36,10 @@ protected
   parameter Types.PerUnit vf00=V_MBtoSB*(K1*id0 + e1q0)/(1 - Taa/T1d0)
     "Init. val. (pu, SB)";
 initial equation
-  der(e1d) = 0;
-  der(e1d) = 0; //
-  der(e2d) = 0;
-  der(e2q) = 0; //
+  // der(e1d) = 0;
+  // der(e1d) = 0; //
+  // der(e2d) = 0;
+  // der(e2q) = 0; //
 equation
 
   der(e1q) = ((-e1q) - (xd - x1d - T2d0/T1d0*x2d/x1d*(xd - x1d))*id + (1 - Taa/
