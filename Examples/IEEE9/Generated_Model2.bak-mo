@@ -1,0 +1,136 @@
+within OpenIPSL.Examples.IEEE9;
+model Generated_Model2
+  extends Modelica.Icons.Example;
+  inner OpenIPSL.Electrical.SystemBase SysData(S_b=100e6, fn=60);
+
+  // Buses
+  OpenIPSL.Electrical.Buses.Bus B1(V_b=16500.0,v_0 = 1, angle_0 = 0)
+  annotation(Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation=180,  origin={-218,108})));
+  OpenIPSL.Electrical.Buses.Bus B2(V_b=18000.0,v_0 = 1, angle_0 = 0)
+  annotation(Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation=0,    origin={104,-48})));
+  OpenIPSL.Electrical.Buses.Bus B3(V_b=13800.0,v_0 = 1, angle_0 = 0)
+  annotation(Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin={-38,-186})));
+  OpenIPSL.Electrical.Buses.Bus B4(V_b=230000.0,v_0 = 1, angle_0 = 0)
+  annotation(Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation=180,  origin={-156,108})));
+  OpenIPSL.Electrical.Buses.Bus B5(V_b=230000.0,v_0 = 1, angle_0 = 0)
+  annotation(Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation=180,  origin={-20,90})));
+  OpenIPSL.Electrical.Buses.Bus B6(V_b=230000.0,v_0 = 1, angle_0 = 0)
+  annotation(Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation=180,  origin={-102,64})));
+  OpenIPSL.Electrical.Buses.Bus B7(V_b=230000.0,v_0 = 1, angle_0 = 0)
+  annotation(Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation=0,    origin={58,4})));
+  OpenIPSL.Electrical.Buses.Bus B8(V_b=230000.0,v_0 = 1, angle_0 = 0)
+  annotation(Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation=270,  origin={-42,-98})));
+  OpenIPSL.Electrical.Buses.Bus B9(V_b=230000.0,v_0 = 1, angle_0 = 0)
+  annotation(Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin={-40,-138})));
+
+  // Lines and Transformers
+  OpenIPSL.Electrical.Branches.PwLine line_9_8(
+    R=0.0119, X=0.1008, G=0, B=0.209)
+    annotation(Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin={-40,-112})));
+  OpenIPSL.Electrical.Branches.PwLine line_7_8(
+    R=0.0085, X=0.072, G=0, B=0.149)
+    annotation(Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation=270,  origin={-30,-72})));
+  OpenIPSL.Electrical.Branches.PwLine line_9_6(
+    R=0.039, X=0.17, G=0, B=0.358)
+    annotation(Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation=90,   origin={-206,-58})));
+  OpenIPSL.Electrical.Branches.PwLine line_7_5(
+    R=0.032, X=0.161, G=0, B=0.306)
+    annotation(Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin={-34,56})));
+  OpenIPSL.Electrical.Branches.PwLine line_5_4(
+    R=0.01, X=0.085, G=0, B=0.176)
+    annotation(Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation=180,  origin={-60,108})));
+  OpenIPSL.Electrical.Branches.PwLine line_6_4(
+    R=0.017, X=0.092, G=0, B=0.158)
+    annotation(Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin={-118,86})));
+  OpenIPSL.Electrical.Branches.PSAT.TwoWindingTransformer xfmr_2_7(
+    V_b=18000.0, Vn=230000.0, rT=0.0, xT=0.0625)
+    annotation(Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation=90,   origin={44,-40})));
+  OpenIPSL.Electrical.Branches.PSAT.TwoWindingTransformer xfmr_3_9(
+    V_b=13800.0, Vn=230000.0, rT=0.0, xT=0.0586)
+    annotation(Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin={-38,-166})));
+  OpenIPSL.Electrical.Branches.PSAT.TwoWindingTransformer xfmr_1_4(
+    V_b=16500.0, Vn=230000.0, rT=0.0, xT=0.0576)
+    annotation(Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation=0,    origin={-186,108})));
+
+  // Generators
+  OpenIPSL.GENPF.GeneratorPV gen1(
+    V_b=16500.0, v_0=1.04, P_0=99000000.0, Q_0=-99000000.0)
+    annotation(Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin={-258,96})));
+  OpenIPSL.GENPF.GeneratorPV gen2(
+    V_b=18000.0, v_0=1.025, P_0=1630000.0, Q_0=0)
+    annotation(Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation=180,  origin={152,-44})));
+  OpenIPSL.GENPF.GeneratorVT gen3(
+    V_b=13800.0, v_0=1.025, P_0=850000.0, Q_0=0,angle_0=0)
+    annotation(Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin={-38,-214})));
+
+  // Loads
+  OpenIPSL.Electrical.Loads.PSAT.PQ load6(
+    P_0=900000.0, Q_0=300000.0)
+    annotation(Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation=90,   origin={-188,64})));
+  OpenIPSL.Electrical.Loads.PSAT.PQ load8(
+    P_0=1000000.0, Q_0=350000.0)
+    annotation(Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation=90,   origin={-138,-98})));
+  OpenIPSL.Electrical.Loads.PSAT.PQ load5(
+    P_0=1250000.0, Q_0=500000.0)
+    annotation(Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin={62,108})));
+
+equation
+  connect(line_9_8.p, B9.p)
+   annotation(Line(points={{-40,-121},{-40,-138}},               color = {0, 0, 255}, smooth = Smooth.None));
+  connect(line_9_8.n, B8.p)
+   annotation(Line(points={{-40,-103},{-42,-103},{-42,-98}},     color = {0, 0, 255}, smooth = Smooth.None));
+  connect(line_7_8.p, B7.p)
+   annotation(Line(points={{-30,-63},{24,-63},{24,4},{58,4}},    color = {0, 0, 255}, smooth = Smooth.None));
+  connect(line_7_8.n, B8.p)
+   annotation(Line(points={{-30,-81},{-58,-81},{-58,-98},{-42,-98}},
+                                                                 color = {0, 0, 255}, smooth = Smooth.None));
+  connect(line_9_6.p, B9.p)
+   annotation(Line(points={{-206,-67},{-340,-67},{-340,-146},{-164,-146},{-164,-138},
+          {-40,-138}},                                           color = {0, 0, 255}, smooth = Smooth.None));
+  connect(line_9_6.n, B6.p)
+   annotation(Line(points={{-206,-49},{-120,-49},{-120,64},{-102,64}},
+                                                                 color = {0, 0, 255}, smooth = Smooth.None));
+  connect(line_7_5.p, B7.p)
+   annotation(Line(points={{-34,47},{-34,4},{58,4}},             color = {0, 0, 255}, smooth = Smooth.None));
+  connect(line_7_5.n, B5.p)
+   annotation(Line(points={{-34,65},{-34,90},{-20,90}},          color = {0, 0, 255}, smooth = Smooth.None));
+  connect(line_5_4.p, B5.p)
+   annotation(Line(points={{-51,108},{-34,108},{-34,90},{-20,90}},
+                                                                 color = {0, 0, 255}, smooth = Smooth.None));
+  connect(line_5_4.n, B4.p)
+   annotation(Line(points={{-69,108},{-156,108}},                color = {0, 0, 255}, smooth = Smooth.None));
+  connect(line_6_4.p, B6.p)
+   annotation(Line(points={{-118,77},{-118,64},{-102,64}},       color = {0, 0, 255}, smooth = Smooth.None));
+  connect(line_6_4.n, B4.p)
+   annotation(Line(points={{-118,95},{-118,94},{-120,94},{-120,108},{-156,108}},
+                                                                 color = {0, 0, 255}, smooth = Smooth.None));
+  connect(xfmr_2_7.p, B2.p)
+   annotation(Line(points={{44,-51},{44,-64},{118,-64},{118,-48},{104,-48}},
+                                                                 color = {0, 0, 255}, smooth = Smooth.None));
+  connect(xfmr_2_7.n, B7.p)
+   annotation(Line(points={{44,-29},{44,4},{58,4}},              color = {0, 0, 255}, smooth = Smooth.None));
+  connect(xfmr_3_9.p, B3.p)
+   annotation(Line(points={{-38,-177},{-38,-186}},               color = {0, 0, 255}, smooth = Smooth.None));
+  connect(xfmr_3_9.n, B9.p)
+   annotation(Line(points={{-38,-155},{-38,-138},{-40,-138}},    color = {0, 0, 255}, smooth = Smooth.None));
+  connect(xfmr_1_4.p, B1.p)
+   annotation(Line(points={{-197,108},{-218,108}},               color = {0, 0, 255}, smooth = Smooth.None));
+  connect(xfmr_1_4.n, B4.p)
+   annotation(Line(points={{-175,108},{-156,108}},               color = {0, 0, 255}, smooth = Smooth.None));
+  connect(gen1.pwPin, B1.p)
+   annotation(Line(points={{-258,107},{-238,107},{-238,108},{-218,108}},
+                                                                 color = {0, 0, 255}, smooth = Smooth.None));
+  connect(gen2.pwPin, B2.p)
+   annotation(Line(points={{141,-44},{118,-44},{118,-48},{104,-48}},
+                                                                 color = {0, 0, 255}, smooth = Smooth.None));
+  connect(gen3.pwPin, B3.p)
+   annotation(Line(points={{-38,-203},{-38,-186}},               color = {0, 0, 255}, smooth = Smooth.None));
+  connect(load6.p, B6.p)
+   annotation(Line(points={{-198,64},{-102,64}},                 color = {0, 0, 255}, smooth = Smooth.None));
+  connect(load8.p, B8.p)
+   annotation(Line(points={{-148,-98},{-58,-98},{-58,-98},{-42,-98}},
+                                                                 color = {0, 0, 255}, smooth = Smooth.None));
+  connect(load5.p, B5.p)
+   annotation(Line(points={{52,108},{-34,108},{-34,90},{-20,90}},color = {0, 0, 255}, smooth = Smooth.None));
+
+end Generated_Model2;

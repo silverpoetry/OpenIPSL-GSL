@@ -1,0 +1,11 @@
+within OpenIPSL.Examples.DAEMode.SMIB_Examples.Example_1.Generator;
+model GeneratorPV "Generator model composed by PSAT components"
+    extends OpenIPSL.Interfaces.Generator;
+
+equation
+
+
+  v_0 =sqrt( pwPin.vr*pwPin.vr+ pwPin.vi* pwPin.vi);
+  P_0 = -(pwPin.vr*pwPin.ir + pwPin.vi*pwPin.ii)*S_b;
+
+end GeneratorPV;

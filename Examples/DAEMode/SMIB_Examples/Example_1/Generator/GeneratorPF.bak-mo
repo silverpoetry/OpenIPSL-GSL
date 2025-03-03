@@ -1,0 +1,11 @@
+within OpenIPSL.Examples.DAEMode.SMIB_Examples.Example_1.Generator;
+model GeneratorPF "Generator model composed by PSAT components"
+    extends OpenIPSL.Interfaces.Generator;
+
+equation
+
+  pwPin.vr = v_0*cos(angle_0);
+  pwPin.vi = v_0*sin(angle_0);
+
+    annotation (Dialog(group="Power flow data", enable=enableangle_0));
+end GeneratorPF;

@@ -1,0 +1,8 @@
+ 
+Compiling and linking the model (Visual C++). 
+ 
+dsmodel.c
+  正在创建库 dymosim.lib 和对象 dymosim.exp
+ 
+Successful generation of Dymosim. 
+ 

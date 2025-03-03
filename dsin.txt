@@ -1,0 +1,2636 @@
+#1
+char Aclass(3,24)
+Adymosim
+1.4
+Modelica experiment file
+
+
+#    Experiment parameters
+double experiment(7,1)
+       0                   # StartTime    Time at which integration starts
+                           #              (and linearization and trimming time)
+       1                   # StopTime     Time at which integration stops
+       0                   # Increment    Communication step size, if > 0
+     500                   # nInterval    Number of communication intervals, if > 0
+  1.0000000000000000E-04   # Tolerance    Relative precision of signals for
+                           #              simulation, linearization and trimming
+       0                   # MaxFixedStep Maximum step size of fixed step size
+                           #              integrators, if > 0.0
+       8                   # Algorithm    Integration algorithm as integer (1...28)
+                           #
+                           #             | model|       |        | dense | state |
+                           # Algorithm   | typ  | stiff | order  | output| event |
+                           # ------------+------+-------+--------+-------+-------+
+                           #  1 | deabm  |  ode |   no  |  1-12  |  yes  |   no  |
+                           #  2 | lsode1 |  ode |   no  |  1-12  |  yes  |   no  |
+                           #  3 | lsode2 |  ode |  yes  |  1-5   |  yes  |   no  |
+                           #  4 | lsodar |  ode |  both |1-12,1-5|  yes  |  yes  |
+                           #  5 | dopri5 |  ode |   no  |   5    |   no  |   no  |
+                           #  6 | dopri8 |  ode |   no  |   8    |   no  |   no  |
+                           #  7 | grk4t  |  ode |  yes  |   4    |   no  |   no  |
+                           #  8 | dassl  |  dae |  yes  |  1-5   |  yes  |  yes  |
+                           #  9 | odassl | hdae |  yes  |  1-5   |  yes  |  yes  |
+                           # 10 | mexx   | hdae |   no  |  2-24  |   no  |   no  |
+                           # 11 | euler  |  ode |   no  |   1    |   no  |  yes  |
+                           # 12 | rkfix2 |  ode |   no  |   2    |   no  |  yes  |
+                           # 13 | rkfix3 |  ode |   no  |   3    |   no  |  yes  |
+                           # 14 | rkfix4 |  ode |   no  |   4    |   no  |  yes  |
+                           #>=14| others |  ode |yes/no |  2-5   |   yes |  yes  |
+                           # ---+--------+------+-------+--------+-------+-------+
+                           # euler and rkfix have fixed stepsize.
+
+
+#    Method tuning parameters
+double method(27,1)
+       1                   # grid     type of communication time grid, defined by
+                           #          = 1: equidistant points ("Increment/nInterval")
+                           #          = 2: vector of grid points ("tgrid")
+                           #          = 3: variable step integrator (automatically)
+                           #          = 4: model (call of "increment" in Dymola, e.g.
+                           #                      incr=Time > 2 then 0 else 0.1
+                           #                      dummy=increment(incr))
+                           #          grid = 1,3 is stopped by "StopTime"
+                           #          grid = 2   is stopped by "tgrid(last)"
+                           #          grid = 4   runs forever (stopped by model)
+       1                   # nt       Use every NT time instant, if grid = 3
+       3                   # dense    1/2/3 restart/step/interpolate GRID points
+       1                   # evgrid   0/1 do not/save event points in comm. time grid
+       1                   # evu      0/1 U-discontinuity does not/trigger events
+       0                   # evuord       U-discontinuity order to consider (0,1,...)
+       0                   # error    0/1/2 One message/warning/error messages
+       0                   # jac      0/1 Compute jacobian numerically/by BLOCKJ
+       0                   # xd0c     0/1 Compute/set XD0
+       0                   # f3       0/1 Ignore/use F3 of HDAE (= index 1)
+       0                   # f4       0/1 Ignore/use F4 of HDAE (= index 2)
+       0                   # f5       0/1 Ignore/use F5 of HDAE (= invar.)
+       0                   # debug    flags for debug information (1<<0 uses pdebug) 
+     100                   # pdebug       priority of debug information (1...100)
+       0                   # fmax     Maximum number of evaluations of BLOCKF, if > 0
+       0                   # ordmax   Maximum allowed integration order, if > 0
+       0                   # hmax     Maximum absolute stepsize, if > 0
+       0                   # hmin     Minimum absolute stepsize, if > 0 (use with care!)
+       0                   # h0       Stepsize to be attempted on first step, if > 0
+  2.0000000000000000E-14   # teps     Bound to check, if 2 equal time instants
+  1.0000000000000000E-10   # eveps    Hysteresis epsilon at event points
+      20                   # eviter   Maximum number of event iterations
+  9.9999999999999995E-07   # delaym   Minimum time increment in delay buffers
+       1                   # fexcep   0/1 floating exception crashes/stops dymosim
+       1                   # tscale   clock-time = tscale*simulation-time, if grid = 5
+                           #          > 1: simulation too slow
+                           #          = 1: simulation-time = real-time
+                           #          < 1: simulation too fast
+       1                   # shared   (not used)
+    2473                   # memkey   (not used)
+
+
+#    Output parameters
+int settings(13,1)
+ 0                         # lprec    0/1 do not/store result data in double
+ 1                         # lx       0/1 do not/store x  (state variables)
+ 1                         # lxd      0/1 do not/store xd (derivative of states)
+ 1                         # lu       0/1 do not/store u  (input     signals)
+ 1                         # ly       0/1 do not/store y  (output    signals)
+ 0                         # lz       0/1 do not/store z  (indicator signals)
+ 1                         # lw       0/1 do not/store w  (auxiliary signals)
+ 1                         # la       0/1 do not/store a  (alias     signals)
+ 0                         # lperf    0/1 do not/store performance indicators
+ 0                         # levent   0/1 do not/store event point
+ 1                         # lres     0/1 do not/store results on result file
+ 0                         # lshare   0/1 do not/store info data for shared memory on dsshare.txt
+ 1                         # lform    0/1 ASCII/Matlab-binary storage format of results
+                           #              (for simulation/linearization; not for trimming)
+
+
+#    Names of initial variables
+char initialName(827,37)
+SysData.S_b
+SysData.fn
+B1.S_b
+B1.enableS_b
+B1.V_b
+B1.enableV_b
+B1.fn
+B1.enablefn
+B1.P_0
+B1.enableP_0
+B1.Q_0
+B1.enableQ_0
+B1.v_0
+B1.enablev_0
+B1.angle_0
+B1.enableangle_0
+B1.displayPF
+B1.enabledisplayPF
+B1.p.vr
+B1.p.vi
+B1.p.ir
+B1.p.ii
+B1.v
+B1.angle
+B1.angleDisplay
+B2.S_b
+B2.enableS_b
+B2.V_b
+B2.enableV_b
+B2.fn
+B2.enablefn
+B2.P_0
+B2.enableP_0
+B2.Q_0
+B2.enableQ_0
+B2.v_0
+B2.enablev_0
+B2.angle_0
+B2.enableangle_0
+B2.displayPF
+B2.enabledisplayPF
+B2.p.vr
+B2.p.vi
+B2.p.ir
+B2.p.ii
+B2.v
+B2.angle
+B2.angleDisplay
+B3.S_b
+B3.enableS_b
+B3.V_b
+B3.enableV_b
+B3.fn
+B3.enablefn
+B3.P_0
+B3.enableP_0
+B3.Q_0
+B3.enableQ_0
+B3.v_0
+B3.enablev_0
+B3.angle_0
+B3.enableangle_0
+B3.displayPF
+B3.enabledisplayPF
+B3.p.vr
+B3.p.vi
+B3.p.ir
+B3.p.ii
+B3.v
+B3.angle
+B3.angleDisplay
+B4.S_b
+B4.enableS_b
+B4.V_b
+B4.enableV_b
+B4.fn
+B4.enablefn
+B4.P_0
+B4.enableP_0
+B4.Q_0
+B4.enableQ_0
+B4.v_0
+B4.enablev_0
+B4.angle_0
+B4.enableangle_0
+B4.displayPF
+B4.enabledisplayPF
+B4.p.vr
+B4.p.vi
+B4.p.ir
+B4.p.ii
+B4.v
+B4.angle
+B4.angleDisplay
+B5.S_b
+B5.enableS_b
+B5.V_b
+B5.enableV_b
+B5.fn
+B5.enablefn
+B5.P_0
+B5.enableP_0
+B5.Q_0
+B5.enableQ_0
+B5.v_0
+B5.enablev_0
+B5.angle_0
+B5.enableangle_0
+B5.displayPF
+B5.enabledisplayPF
+B5.p.vr
+B5.p.vi
+B5.p.ir
+B5.p.ii
+B5.v
+B5.angle
+B5.angleDisplay
+B6.S_b
+B6.enableS_b
+B6.V_b
+B6.enableV_b
+B6.fn
+B6.enablefn
+B6.P_0
+B6.enableP_0
+B6.Q_0
+B6.enableQ_0
+B6.v_0
+B6.enablev_0
+B6.angle_0
+B6.enableangle_0
+B6.displayPF
+B6.enabledisplayPF
+B6.p.vr
+B6.p.vi
+B6.p.ir
+B6.p.ii
+B6.v
+B6.angle
+B6.angleDisplay
+B7.S_b
+B7.enableS_b
+B7.V_b
+B7.enableV_b
+B7.fn
+B7.enablefn
+B7.P_0
+B7.enableP_0
+B7.Q_0
+B7.enableQ_0
+B7.v_0
+B7.enablev_0
+B7.angle_0
+B7.enableangle_0
+B7.displayPF
+B7.enabledisplayPF
+B7.p.vr
+B7.p.vi
+B7.p.ir
+B7.p.ii
+B7.v
+B7.angle
+B7.angleDisplay
+B8.S_b
+B8.enableS_b
+B8.V_b
+B8.enableV_b
+B8.fn
+B8.enablefn
+B8.P_0
+B8.enableP_0
+B8.Q_0
+B8.enableQ_0
+B8.v_0
+B8.enablev_0
+B8.angle_0
+B8.enableangle_0
+B8.displayPF
+B8.enabledisplayPF
+B8.p.vr
+B8.p.vi
+B8.p.ir
+B8.p.ii
+B8.v
+B8.angle
+B8.angleDisplay
+B9.S_b
+B9.enableS_b
+B9.V_b
+B9.enableV_b
+B9.fn
+B9.enablefn
+B9.P_0
+B9.enableP_0
+B9.Q_0
+B9.enableQ_0
+B9.v_0
+B9.enablev_0
+B9.angle_0
+B9.enableangle_0
+B9.displayPF
+B9.enabledisplayPF
+B9.p.vr
+B9.p.vi
+B9.p.ir
+B9.p.ii
+B9.v
+B9.angle
+B9.angleDisplay
+line_9_8.p.ir
+line_9_8.p.ii
+line_9_8.n.ir
+line_9_8.n.ii
+line_9_8.R
+line_9_8.X
+line_9_8.G
+line_9_8.B
+line_9_8.S_b
+line_9_8.t1
+line_9_8.t2
+line_9_8.opening
+line_9_8.displayPF
+line_9_8.P12
+line_9_8.P21
+line_9_8.Q12
+line_9_8.Q21
+line_9_8.Y.re
+line_9_8.Y.im
+line_9_8.Z.re
+line_9_8.Z.im
+line_7_8.p.ir
+line_7_8.p.ii
+line_7_8.n.ir
+line_7_8.n.ii
+line_7_8.R
+line_7_8.X
+line_7_8.G
+line_7_8.B
+line_7_8.S_b
+line_7_8.t1
+line_7_8.t2
+line_7_8.opening
+line_7_8.displayPF
+line_7_8.P12
+line_7_8.P21
+line_7_8.Q12
+line_7_8.Q21
+line_7_8.Y.re
+line_7_8.Y.im
+line_7_8.Z.re
+line_7_8.Z.im
+line_9_6.p.ir
+line_9_6.p.ii
+line_9_6.n.ir
+line_9_6.n.ii
+line_9_6.R
+line_9_6.X
+line_9_6.G
+line_9_6.B
+line_9_6.S_b
+line_9_6.t1
+line_9_6.t2
+line_9_6.opening
+line_9_6.displayPF
+line_9_6.P12
+line_9_6.P21
+line_9_6.Q12
+line_9_6.Q21
+line_9_6.Y.re
+line_9_6.Y.im
+line_9_6.Z.re
+line_9_6.Z.im
+line_7_5.p.ir
+line_7_5.p.ii
+line_7_5.n.ir
+line_7_5.n.ii
+line_7_5.R
+line_7_5.X
+line_7_5.G
+line_7_5.B
+line_7_5.S_b
+line_7_5.t1
+line_7_5.t2
+line_7_5.opening
+line_7_5.displayPF
+line_7_5.P12
+line_7_5.P21
+line_7_5.Q12
+line_7_5.Q21
+line_7_5.Y.re
+line_7_5.Y.im
+line_7_5.Z.re
+line_7_5.Z.im
+line_5_4.p.ir
+line_5_4.p.ii
+line_5_4.n.ir
+line_5_4.n.ii
+line_5_4.R
+line_5_4.X
+line_5_4.G
+line_5_4.B
+line_5_4.S_b
+line_5_4.t1
+line_5_4.t2
+line_5_4.opening
+line_5_4.displayPF
+line_5_4.P12
+line_5_4.P21
+line_5_4.Q12
+line_5_4.Q21
+line_5_4.Y.re
+line_5_4.Y.im
+line_5_4.Z.re
+line_5_4.Z.im
+line_6_4.p.ir
+line_6_4.p.ii
+line_6_4.n.ir
+line_6_4.n.ii
+line_6_4.R
+line_6_4.X
+line_6_4.G
+line_6_4.B
+line_6_4.S_b
+line_6_4.t1
+line_6_4.t2
+line_6_4.opening
+line_6_4.displayPF
+line_6_4.P12
+line_6_4.P21
+line_6_4.Q12
+line_6_4.Q21
+line_6_4.Y.re
+line_6_4.Y.im
+line_6_4.Z.re
+line_6_4.Z.im
+xfmr_2_7.p.ir
+xfmr_2_7.p.ii
+xfmr_2_7.n.ir
+xfmr_2_7.n.ii
+xfmr_2_7.S_b
+xfmr_2_7.V_b
+xfmr_2_7.Sn
+xfmr_2_7.Vn
+xfmr_2_7.rT
+xfmr_2_7.xT
+xfmr_2_7.m
+xfmr_2_7.displayPF
+xfmr_2_7.P12
+xfmr_2_7.P21
+xfmr_2_7.Q12
+xfmr_2_7.Q21
+xfmr_2_7.Zn
+xfmr_2_7.Zb
+xfmr_2_7.r
+xfmr_2_7.x
+xfmr_2_7.tc
+xfmr_3_9.p.ir
+xfmr_3_9.p.ii
+xfmr_3_9.n.ir
+xfmr_3_9.n.ii
+xfmr_3_9.S_b
+xfmr_3_9.V_b
+xfmr_3_9.Sn
+xfmr_3_9.Vn
+xfmr_3_9.rT
+xfmr_3_9.xT
+xfmr_3_9.m
+xfmr_3_9.displayPF
+xfmr_3_9.P12
+xfmr_3_9.P21
+xfmr_3_9.Q12
+xfmr_3_9.Q21
+xfmr_3_9.Zn
+xfmr_3_9.Zb
+xfmr_3_9.r
+xfmr_3_9.x
+xfmr_3_9.tc
+xfmr_1_4.p.ir
+xfmr_1_4.p.ii
+xfmr_1_4.n.ir
+xfmr_1_4.n.ii
+xfmr_1_4.S_b
+xfmr_1_4.V_b
+xfmr_1_4.Sn
+xfmr_1_4.Vn
+xfmr_1_4.rT
+xfmr_1_4.xT
+xfmr_1_4.m
+xfmr_1_4.displayPF
+xfmr_1_4.P12
+xfmr_1_4.P21
+xfmr_1_4.Q12
+xfmr_1_4.Q21
+xfmr_1_4.Zn
+xfmr_1_4.Zb
+xfmr_1_4.r
+xfmr_1_4.x
+xfmr_1_4.tc
+gen1.S_b
+gen1.enableS_b
+gen1.V_b
+gen1.enableV_b
+gen1.fn
+gen1.enablefn
+gen1.P_0
+gen1.enableP_0
+gen1.Q_0
+gen1.enableQ_0
+gen1.v_0
+gen1.enablev_0
+gen1.angle_0
+gen1.enableangle_0
+gen1.displayPF
+gen1.enabledisplayPF
+gen1.height_3
+gen1.tstart_3
+gen1.refdisturb_3
+gen1.gen.S_b
+gen1.gen.enableS_b
+gen1.gen.V_b
+gen1.gen.enableV_b
+gen1.gen.fn
+gen1.gen.enablefn
+gen1.gen.P_0
+gen1.gen.enableP_0
+gen1.gen.Q_0
+gen1.gen.enableQ_0
+gen1.gen.v_0
+gen1.gen.enablev_0
+gen1.gen.angle_0
+gen1.gen.enableangle_0
+gen1.gen.displayPF
+gen1.gen.enabledisplayPF
+gen1.gen.Sn
+gen1.gen.Vn
+gen1.gen.ra
+gen1.gen.x1d
+gen1.gen.M
+gen1.gen.D
+gen1.gen.delta
+gen1.gen.der(delta)
+gen1.gen.w
+gen1.gen.der(w)
+gen1.gen.v
+gen1.gen.P
+gen1.gen.Q
+gen1.gen.vf
+gen1.gen.anglev
+gen1.gen.vd
+gen1.gen.vq
+gen1.gen.id
+gen1.gen.iq
+gen1.gen.pe
+gen1.gen.vf_MB
+gen1.gen.w_b
+gen1.gen.S_SBtoMB
+gen1.gen.I_MBtoSB
+gen1.gen.V_MBtoSB
+gen1.gen.Z_MBtoSB
+gen1.gen.p0
+gen1.gen.q0
+gen1.gen.Vt0.re
+gen1.gen.Vt0.im
+gen1.gen.S0.re
+gen1.gen.S0.im
+gen1.gen.I0.re
+gen1.gen.I0.im
+gen1.gen.vr0
+gen1.gen.vi0
+gen1.gen.ir0
+gen1.gen.ii0
+gen1.gen.xq0
+gen1.gen.delta0
+gen1.gen.Vdq0.re
+gen1.gen.Vdq0.im
+gen1.gen.Idq0.re
+gen1.gen.Idq0.im
+gen1.gen.vd0
+gen1.gen.vq0
+gen1.gen.id0
+gen1.gen.iq0
+gen1.gen.pm00
+gen1.gen.xd
+gen1.gen.xq
+gen1.gen.x1q
+gen1.gen.T1d0
+gen1.gen.T1q0
+gen1.gen.e1q
+gen1.gen.der(e1q)
+gen1.gen.e1d
+gen1.gen.der(e1d)
+gen1.gen.vf00
+gen1.gen.e1q0
+gen1.gen.e1d0
+gen1.aVRtypeIII.vfmax
+gen1.aVRtypeIII.vfmin
+gen1.aVRtypeIII.K0
+gen1.aVRtypeIII.T2
+gen1.aVRtypeIII.T1
+gen1.aVRtypeIII.Te
+gen1.aVRtypeIII.Tr
+gen1.aVRtypeIII.vm
+gen1.aVRtypeIII.der(vm)
+gen1.aVRtypeIII.vr
+gen1.aVRtypeIII.der(vr)
+gen1.aVRtypeIII.vf1
+gen1.aVRtypeIII.der(vf1)
+gen1.aVRtypeIII.limiter1.uMax
+gen1.aVRtypeIII.limiter1.uMin
+gen1.aVRtypeIII.limiter1.strict
+gen1.aVRtypeIII.limiter1.homotopyType
+gen1.aVRtypeIII.vref
+gen1.aVRtypeIII.s0
+gen1.pss_off.k
+gen2.S_b
+gen2.enableS_b
+gen2.V_b
+gen2.enableV_b
+gen2.fn
+gen2.enablefn
+gen2.P_0
+gen2.enableP_0
+gen2.Q_0
+gen2.enableQ_0
+gen2.v_0
+gen2.enablev_0
+gen2.angle_0
+gen2.enableangle_0
+gen2.displayPF
+gen2.enabledisplayPF
+gen2.height_1
+gen2.tstart_1
+gen2.refdisturb_1
+gen2.gen.S_b
+gen2.gen.enableS_b
+gen2.gen.V_b
+gen2.gen.enableV_b
+gen2.gen.fn
+gen2.gen.enablefn
+gen2.gen.P_0
+gen2.gen.enableP_0
+gen2.gen.Q_0
+gen2.gen.enableQ_0
+gen2.gen.v_0
+gen2.gen.enablev_0
+gen2.gen.angle_0
+gen2.gen.enableangle_0
+gen2.gen.displayPF
+gen2.gen.enabledisplayPF
+gen2.gen.Sn
+gen2.gen.Vn
+gen2.gen.ra
+gen2.gen.x1d
+gen2.gen.M
+gen2.gen.D
+gen2.gen.delta
+gen2.gen.der(delta)
+gen2.gen.w
+gen2.gen.der(w)
+gen2.gen.v
+gen2.gen.P
+gen2.gen.Q
+gen2.gen.vf
+gen2.gen.anglev
+gen2.gen.vd
+gen2.gen.vq
+gen2.gen.id
+gen2.gen.iq
+gen2.gen.pe
+gen2.gen.vf_MB
+gen2.gen.w_b
+gen2.gen.S_SBtoMB
+gen2.gen.I_MBtoSB
+gen2.gen.V_MBtoSB
+gen2.gen.Z_MBtoSB
+gen2.gen.p0
+gen2.gen.q0
+gen2.gen.Vt0.re
+gen2.gen.Vt0.im
+gen2.gen.S0.re
+gen2.gen.S0.im
+gen2.gen.I0.re
+gen2.gen.I0.im
+gen2.gen.vr0
+gen2.gen.vi0
+gen2.gen.ir0
+gen2.gen.ii0
+gen2.gen.xq0
+gen2.gen.delta0
+gen2.gen.Vdq0.re
+gen2.gen.Vdq0.im
+gen2.gen.Idq0.re
+gen2.gen.Idq0.im
+gen2.gen.vd0
+gen2.gen.vq0
+gen2.gen.id0
+gen2.gen.iq0
+gen2.gen.pm00
+gen2.gen.xd
+gen2.gen.xq
+gen2.gen.x1q
+gen2.gen.T1d0
+gen2.gen.T1q0
+gen2.gen.e1q
+gen2.gen.der(e1q)
+gen2.gen.e1d
+gen2.gen.der(e1d)
+gen2.gen.vf00
+gen2.gen.e1q0
+gen2.gen.e1d0
+gen2.aVRtypeIII.vfmax
+gen2.aVRtypeIII.vfmin
+gen2.aVRtypeIII.K0
+gen2.aVRtypeIII.T2
+gen2.aVRtypeIII.T1
+gen2.aVRtypeIII.Te
+gen2.aVRtypeIII.Tr
+gen2.aVRtypeIII.vm
+gen2.aVRtypeIII.der(vm)
+gen2.aVRtypeIII.vr
+gen2.aVRtypeIII.der(vr)
+gen2.aVRtypeIII.vf1
+gen2.aVRtypeIII.der(vf1)
+gen2.aVRtypeIII.limiter1.uMax
+gen2.aVRtypeIII.limiter1.uMin
+gen2.aVRtypeIII.limiter1.strict
+gen2.aVRtypeIII.limiter1.homotopyType
+gen2.aVRtypeIII.vref
+gen2.aVRtypeIII.s0
+gen2.pss_off.k
+gen3.S_b
+gen3.enableS_b
+gen3.V_b
+gen3.enableV_b
+gen3.fn
+gen3.enablefn
+gen3.P_0
+gen3.enableP_0
+gen3.Q_0
+gen3.enableQ_0
+gen3.v_0
+gen3.enablev_0
+gen3.angle_0
+gen3.enableangle_0
+gen3.displayPF
+gen3.enabledisplayPF
+gen3.height_2
+gen3.tstart_2
+gen3.refdisturb_2
+gen3.gen.S_b
+gen3.gen.enableS_b
+gen3.gen.V_b
+gen3.gen.enableV_b
+gen3.gen.fn
+gen3.gen.enablefn
+gen3.gen.P_0
+gen3.gen.enableP_0
+gen3.gen.Q_0
+gen3.gen.enableQ_0
+gen3.gen.v_0
+gen3.gen.enablev_0
+gen3.gen.angle_0
+gen3.gen.enableangle_0
+gen3.gen.displayPF
+gen3.gen.enabledisplayPF
+gen3.gen.Sn
+gen3.gen.Vn
+gen3.gen.ra
+gen3.gen.x1d
+gen3.gen.M
+gen3.gen.D
+gen3.gen.delta
+gen3.gen.der(delta)
+gen3.gen.w
+gen3.gen.der(w)
+gen3.gen.v
+gen3.gen.P
+gen3.gen.Q
+gen3.gen.vf
+gen3.gen.anglev
+gen3.gen.vd
+gen3.gen.vq
+gen3.gen.id
+gen3.gen.iq
+gen3.gen.pe
+gen3.gen.vf_MB
+gen3.gen.w_b
+gen3.gen.S_SBtoMB
+gen3.gen.I_MBtoSB
+gen3.gen.V_MBtoSB
+gen3.gen.Z_MBtoSB
+gen3.gen.p0
+gen3.gen.q0
+gen3.gen.Vt0.re
+gen3.gen.Vt0.im
+gen3.gen.S0.re
+gen3.gen.S0.im
+gen3.gen.I0.re
+gen3.gen.I0.im
+gen3.gen.vr0
+gen3.gen.vi0
+gen3.gen.ir0
+gen3.gen.ii0
+gen3.gen.xq0
+gen3.gen.delta0
+gen3.gen.Vdq0.re
+gen3.gen.Vdq0.im
+gen3.gen.Idq0.re
+gen3.gen.Idq0.im
+gen3.gen.vd0
+gen3.gen.vq0
+gen3.gen.id0
+gen3.gen.iq0
+gen3.gen.pm00
+gen3.gen.xd
+gen3.gen.xq
+gen3.gen.x1q
+gen3.gen.T1d0
+gen3.gen.T1q0
+gen3.gen.e1q
+gen3.gen.der(e1q)
+gen3.gen.e1d
+gen3.gen.der(e1d)
+gen3.gen.vf00
+gen3.gen.e1q0
+gen3.gen.e1d0
+gen3.aVRtypeIII.vfmax
+gen3.aVRtypeIII.vfmin
+gen3.aVRtypeIII.K0
+gen3.aVRtypeIII.T2
+gen3.aVRtypeIII.T1
+gen3.aVRtypeIII.Te
+gen3.aVRtypeIII.Tr
+gen3.aVRtypeIII.vm
+gen3.aVRtypeIII.der(vm)
+gen3.aVRtypeIII.vr
+gen3.aVRtypeIII.der(vr)
+gen3.aVRtypeIII.vf1
+gen3.aVRtypeIII.der(vf1)
+gen3.aVRtypeIII.limiter1.uMax
+gen3.aVRtypeIII.limiter1.uMin
+gen3.aVRtypeIII.limiter1.strict
+gen3.aVRtypeIII.limiter1.homotopyType
+gen3.aVRtypeIII.vref
+gen3.aVRtypeIII.s0
+gen3.pss_off.k
+load6.S_b
+load6.enableS_b
+load6.V_b
+load6.enableV_b
+load6.fn
+load6.enablefn
+load6.P_0
+load6.enableP_0
+load6.Q_0
+load6.enableQ_0
+load6.v_0
+load6.enablev_0
+load6.angle_0
+load6.enableangle_0
+load6.displayPF
+load6.enabledisplayPF
+load6.Sn
+load6.v
+load6.anglev
+load6.P
+load6.Q
+load6.p.ir
+load6.p.ii
+load6.CoB
+load6.Vmax
+load6.Vmin
+load6.forcePQ
+load8.S_b
+load8.enableS_b
+load8.V_b
+load8.enableV_b
+load8.fn
+load8.enablefn
+load8.P_0
+load8.enableP_0
+load8.Q_0
+load8.enableQ_0
+load8.v_0
+load8.enablev_0
+load8.angle_0
+load8.enableangle_0
+load8.displayPF
+load8.enabledisplayPF
+load8.Sn
+load8.v
+load8.anglev
+load8.P
+load8.Q
+load8.p.ir
+load8.p.ii
+load8.CoB
+load8.Vmax
+load8.Vmin
+load8.forcePQ
+load5.S_b
+load5.enableS_b
+load5.V_b
+load5.enableV_b
+load5.fn
+load5.enablefn
+load5.P_0
+load5.enableP_0
+load5.Q_0
+load5.enableQ_0
+load5.v_0
+load5.enablev_0
+load5.angle_0
+load5.enableangle_0
+load5.displayPF
+load5.enabledisplayPF
+load5.Sn
+load5.v
+load5.anglev
+load5.P
+load5.Q
+load5.p.ir
+load5.p.ii
+load5.CoB
+load5.Vmax
+load5.Vmin
+load5.forcePQ
+
+double initialValue(827,6)
+ -1  1.0000000000000000E+08  0  0  1   280   # SysData.S_b
+ -1      60                  0  0  1   280   # SysData.fn
+  0       0                  0  0  6   256   # B1.S_b
+  0       0                  0  0  6   257   # B1.enableS_b
+ -1   16500                  0  0  1   280   # B1.V_b
+  0       0                  0  0  6   257   # B1.enableV_b
+  0       0                  0  0  6   256   # B1.fn
+  0       0                  0  0  6   257   # B1.enablefn
+ -1  1.0000000000000000E+06  0  0  1   280   # B1.P_0
+  0       0                  0  0  6   257   # B1.enableP_0
+ -1       0                  0  0  1   280   # B1.Q_0
+  0       0                  0  0  6   257   # B1.enableQ_0
+ -1  1.0399999618530273E+00  0  0  1   280   # B1.v_0
+  0       1                  0  0  6   257   # B1.enablev_0
+ -1       0                  0  0  1   280   # B1.angle_0
+  0       1                  0  0  6   257   # B1.enableangle_0
+ -1       1                  0  0  1   281   # B1.displayPF
+  0       1                  0  0  6   257   # B1.enabledisplayPF
+  0       0                  0  0  6   260   # B1.p.vr
+  0       0                  0  0  6   260   # B1.p.vi
+  0       0                  0  0  6   388   # B1.p.ir
+  0       0                  0  0  6   388   # B1.p.ii
+  0       0                  0  0  6   256   # B1.v
+  0       0                  0  0  6   256   # B1.angle
+  0       0                  0  0  6   256   # B1.angleDisplay
+  0       0                  0  0  6   256   # B2.S_b
+  0       0                  0  0  6   257   # B2.enableS_b
+ -1   18000                  0  0  1   280   # B2.V_b
+  0       0                  0  0  6   257   # B2.enableV_b
+  0       0                  0  0  6   256   # B2.fn
+  0       0                  0  0  6   257   # B2.enablefn
+ -1  1.0000000000000000E+06  0  0  1   280   # B2.P_0
+  0       0                  0  0  6   257   # B2.enableP_0
+ -1       0                  0  0  1   280   # B2.Q_0
+  0       0                  0  0  6   257   # B2.enableQ_0
+ -1  1.0250000240382715E+00  0  0  1   280   # B2.v_0
+  0       1                  0  0  6   257   # B2.enablev_0
+ -1  1.6196663977124731E-01  0  0  1   280   # B2.angle_0
+  0       1                  0  0  6   257   # B2.enableangle_0
+ -1       0                  0  0  1   281   # B2.displayPF
+  0       1                  0  0  6   257   # B2.enabledisplayPF
+  0       0                  0  0  6   260   # B2.p.vr
+  0       0                  0  0  6   260   # B2.p.vi
+  0       0                  0  0  6   388   # B2.p.ir
+  0       0                  0  0  6   388   # B2.p.ii
+  0       0                  0  0  6   256   # B2.v
+  0       0                  0  0  6   256   # B2.angle
+  0       0                  0  0  6   256   # B2.angleDisplay
+  0       0                  0  0  6   256   # B3.S_b
+  0       0                  0  0  6   257   # B3.enableS_b
+ -1   13800                  0  0  1   280   # B3.V_b
+  0       0                  0  0  6   257   # B3.enableV_b
+  0       0                  0  0  6   256   # B3.fn
+  0       0                  0  0  6   257   # B3.enablefn
+ -1  1.0000000000000000E+06  0  0  1   280   # B3.P_0
+  0       0                  0  0  6   257   # B3.enableP_0
+ -1       0                  0  0  1   280   # B3.Q_0
+  0       0                  0  0  6   257   # B3.enableQ_0
+ -1  1.0249999789326580E+00  0  0  1   280   # B3.v_0
+  0       1                  0  0  6   257   # B3.enablev_0
+ -1  8.1415269755197958E-02  0  0  1   280   # B3.angle_0
+  0       1                  0  0  6   257   # B3.enableangle_0
+ -1       0                  0  0  1   281   # B3.displayPF
+  0       1                  0  0  6   257   # B3.enabledisplayPF
+  0       0                  0  0  6   260   # B3.p.vr
+  0       0                  0  0  6   260   # B3.p.vi
+  0       0                  0  0  6   388   # B3.p.ir
+  0       0                  0  0  6   388   # B3.p.ii
+  0       0                  0  0  6   256   # B3.v
+  0       0                  0  0  6   256   # B3.angle
+  0       0                  0  0  6   256   # B3.angleDisplay
+  0       0                  0  0  6   256   # B4.S_b
+  0       0                  0  0  6   257   # B4.enableS_b
+ -1  2.3000000000000000E+05  0  0  1   280   # B4.V_b
+  0       0                  0  0  6   257   # B4.enableV_b
+  0       0                  0  0  6   256   # B4.fn
+  0       0                  0  0  6   257   # B4.enablefn
+ -1  1.0000000000000000E+06  0  0  1   280   # B4.P_0
+  0       0                  0  0  6   257   # B4.enableP_0
+ -1       0                  0  0  1   280   # B4.Q_0
+  0       0                  0  0  6   257   # B4.enableQ_0
+ -1  1.0257883921460951E+00  0  0  1   280   # B4.v_0
+  0       1                  0  0  6   257   # B4.enablev_0
+ -1 -3.8690245973569001E-02  0  0  1   280   # B4.angle_0
+  0       1                  0  0  6   257   # B4.enableangle_0
+ -1       0                  0  0  1   281   # B4.displayPF
+  0       1                  0  0  6   257   # B4.enabledisplayPF
+  0       0                  0  0  6   260   # B4.p.vr
+  0       0                  0  0  6   260   # B4.p.vi
+  0       0                  0  0  6   388   # B4.p.ir
+  0       0                  0  0  6   388   # B4.p.ii
+  0       0                  0  0  6   256   # B4.v
+  0       0                  0  0  6   256   # B4.angle
+  0       0                  0  0  6   256   # B4.angleDisplay
+  0       0                  0  0  6   256   # B5.S_b
+  0       0                  0  0  6   257   # B5.enableS_b
+ -1  2.3000000000000000E+05  0  0  1   280   # B5.V_b
+  0       0                  0  0  6   257   # B5.enableV_b
+  0       0                  0  0  6   256   # B5.fn
+  0       0                  0  0  6   257   # B5.enablefn
+ -1  1.0000000000000000E+06  0  0  1   280   # B5.P_0
+  0       0                  0  0  6   257   # B5.enableP_0
+ -1       0                  0  0  1   280   # B5.Q_0
+  0       0                  0  0  6   257   # B5.enableQ_0
+ -1  9.9563083353778903E-01  0  0  1   280   # B5.v_0
+  0       1                  0  0  6   257   # B5.enablev_0
+ -1 -6.9617787129963832E-02  0  0  1   280   # B5.angle_0
+  0       1                  0  0  6   257   # B5.enableangle_0
+ -1       0                  0  0  1   281   # B5.displayPF
+  0       1                  0  0  6   257   # B5.enabledisplayPF
+  0       0                  0  0  6   260   # B5.p.vr
+  0       0                  0  0  6   260   # B5.p.vi
+  0       0                  0  0  6   388   # B5.p.ir
+  0       0                  0  0  6   388   # B5.p.ii
+  0       0                  0  0  6   256   # B5.v
+  0       0                  0  0  6   256   # B5.angle
+  0       0                  0  0  6   256   # B5.angleDisplay
+  0       0                  0  0  6   256   # B6.S_b
+  0       0                  0  0  6   257   # B6.enableS_b
+ -1  2.3000000000000000E+05  0  0  1   280   # B6.V_b
+  0       0                  0  0  6   257   # B6.enableV_b
+  0       0                  0  0  6   256   # B6.fn
+  0       0                  0  0  6   257   # B6.enablefn
+ -1  1.0000000000000000E+06  0  0  1   280   # B6.P_0
+  0       0                  0  0  6   257   # B6.enableP_0
+ -1       0                  0  0  1   280   # B6.Q_0
+  0       0                  0  0  6   257   # B6.enableQ_0
+ -1  1.0126542971713695E+00  0  0  1   280   # B6.v_0
+  0       1                  0  0  6   257   # B6.enablev_0
+ -1 -6.4357204225115164E-02  0  0  1   280   # B6.angle_0
+  0       1                  0  0  6   257   # B6.enableangle_0
+ -1       0                  0  0  1   281   # B6.displayPF
+  0       1                  0  0  6   257   # B6.enabledisplayPF
+  0       0                  0  0  6   260   # B6.p.vr
+  0       0                  0  0  6   260   # B6.p.vi
+  0       0                  0  0  6   388   # B6.p.ir
+  0       0                  0  0  6   388   # B6.p.ii
+  0       0                  0  0  6   256   # B6.v
+  0       0                  0  0  6   256   # B6.angle
+  0       0                  0  0  6   256   # B6.angleDisplay
+  0       0                  0  0  6   256   # B7.S_b
+  0       0                  0  0  6   257   # B7.enableS_b
+ -1  2.3000000000000000E+05  0  0  1   280   # B7.V_b
+  0       0                  0  0  6   257   # B7.enableV_b
+  0       0                  0  0  6   256   # B7.fn
+  0       0                  0  0  6   257   # B7.enablefn
+ -1  1.0000000000000000E+06  0  0  1   280   # B7.P_0
+  0       0                  0  0  6   257   # B7.enableP_0
+ -1       0                  0  0  1   280   # B7.Q_0
+  0       0                  0  0  6   257   # B7.enableQ_0
+ -1  1.0257693628529898E+00  0  0  1   280   # B7.v_0
+  0       1                  0  0  6   257   # B7.enablev_0
+ -1  6.4921033227698946E-02  0  0  1   280   # B7.angle_0
+  0       1                  0  0  6   257   # B7.enableangle_0
+ -1       0                  0  0  1   281   # B7.displayPF
+  0       1                  0  0  6   257   # B7.enabledisplayPF
+  0       0                  0  0  6   260   # B7.p.vr
+  0       0                  0  0  6   260   # B7.p.vi
+  0       0                  0  0  6   388   # B7.p.ir
+  0       0                  0  0  6   388   # B7.p.ii
+  0       0                  0  0  6   256   # B7.v
+  0       0                  0  0  6   256   # B7.angle
+  0       0                  0  0  6   256   # B7.angleDisplay
+  0       0                  0  0  6   256   # B8.S_b
+  0       0                  0  0  6   257   # B8.enableS_b
+ -1  2.3000000000000000E+05  0  0  1   280   # B8.V_b
+  0       0                  0  0  6   257   # B8.enableV_b
+  0       0                  0  0  6   256   # B8.fn
+  0       0                  0  0  6   257   # B8.enablefn
+ -1  1.0000000000000000E+06  0  0  1   280   # B8.P_0
+  0       0                  0  0  6   257   # B8.enableP_0
+ -1       0                  0  0  1   280   # B8.Q_0
+  0       0                  0  0  6   257   # B8.enableQ_0
+ -1  1.0158826121440723E+00  0  0  1   280   # B8.v_0
+  0       1                  0  0  6   257   # B8.enablev_0
+ -1  1.2697899208083421E-02  0  0  1   280   # B8.angle_0
+  0       1                  0  0  6   257   # B8.enableangle_0
+ -1       0                  0  0  1   281   # B8.displayPF
+  0       1                  0  0  6   257   # B8.enabledisplayPF
+  0       0                  0  0  6   260   # B8.p.vr
+  0       0                  0  0  6   260   # B8.p.vi
+  0       0                  0  0  6   388   # B8.p.ir
+  0       0                  0  0  6   388   # B8.p.ii
+  0       0                  0  0  6   256   # B8.v
+  0       0                  0  0  6   256   # B8.angle
+  0       0                  0  0  6   256   # B8.angleDisplay
+  0       0                  0  0  6   256   # B9.S_b
+  0       0                  0  0  6   257   # B9.enableS_b
+ -1  2.3000000000000000E+05  0  0  1   280   # B9.V_b
+  0       0                  0  0  6   257   # B9.enableV_b
+  0       0                  0  0  6   256   # B9.fn
+  0       0                  0  0  6   257   # B9.enablefn
+ -1  1.0000000000000000E+06  0  0  1   280   # B9.P_0
+  0       0                  0  0  6   257   # B9.enableP_0
+ -1       0                  0  0  1   280   # B9.Q_0
+  0       0                  0  0  6   257   # B9.enableQ_0
+ -1  1.0323529638809064E+00  0  0  1   280   # B9.v_0
+  0       1                  0  0  6   257   # B9.enablev_0
+ -1  3.4325671620604160E-02  0  0  1   280   # B9.angle_0
+  0       1                  0  0  6   257   # B9.enableangle_0
+ -1       0                  0  0  1   281   # B9.displayPF
+  0       1                  0  0  6   257   # B9.enabledisplayPF
+  0       0                  0  0  6   260   # B9.p.vr
+  0       0                  0  0  6   260   # B9.p.vi
+  0       0                  0  0  6   388   # B9.p.ir
+  0       0                  0  0  6   388   # B9.p.ii
+  0       0                  0  0  6   256   # B9.v
+  0       0                  0  0  6   256   # B9.angle
+  0       0                  0  0  6   256   # B9.angleDisplay
+  0  1.0000000000000001E-15  0  0  6   420   # line_9_8.p.ir
+  0  1.0000000000000001E-15  0  0  6   420   # line_9_8.p.ii
+  0  1.0000000000000001E-15  0  0  6   420   # line_9_8.n.ir
+  0  1.0000000000000001E-15  0  0  6   420   # line_9_8.n.ii
+ -1  1.1900000000000001E-02  0  0  1   280   # line_9_8.R
+ -1  1.0080000000000000E-01  0  0  1   280   # line_9_8.X
+ -1       0                  0  0  1   280   # line_9_8.G
+ -1  1.0450000000000000E-01  0  0  1   280   # line_9_8.B
+  0       0                  0  0  6   256   # line_9_8.S_b
+  0  9.9999999999999995E+59  0  0  6   256   # line_9_8.t1
+  0  9.9999999999999995E+59  0  0  6   256   # line_9_8.t2
+  0       1                  0  0  6   258   # line_9_8.opening
+ -1       0                  0  0  1   281   # line_9_8.displayPF
+  0       0                  0  0  6   256   # line_9_8.P12
+  0       0                  0  0  6   256   # line_9_8.P21
+  0       0                  0  0  6   256   # line_9_8.Q12
+  0       0                  0  0  6   256   # line_9_8.Q21
+  0       0                  0  0  6  1280   # line_9_8.Y.re
+  0       0                  0  0  6  1280   # line_9_8.Y.im
+  0       0                  0  0  6  1280   # line_9_8.Z.re
+  0       0                  0  0  6  1280   # line_9_8.Z.im
+  0  1.0000000000000001E-15  0  0  6   420   # line_7_8.p.ir
+  0  1.0000000000000001E-15  0  0  6   420   # line_7_8.p.ii
+  0  1.0000000000000001E-15  0  0  6   388   # line_7_8.n.ir
+  0  1.0000000000000001E-15  0  0  6   388   # line_7_8.n.ii
+ -1  8.5000000000000006E-03  0  0  1   280   # line_7_8.R
+ -1  7.1999999999999995E-02  0  0  1   280   # line_7_8.X
+ -1       0                  0  0  1   280   # line_7_8.G
+ -1  7.4499999999999997E-02  0  0  1   280   # line_7_8.B
+  0       0                  0  0  6   256   # line_7_8.S_b
+  0  9.9999999999999995E+59  0  0  6   256   # line_7_8.t1
+  0  9.9999999999999995E+59  0  0  6   256   # line_7_8.t2
+  0       1                  0  0  6   258   # line_7_8.opening
+ -1       0                  0  0  1   281   # line_7_8.displayPF
+  0       0                  0  0  6   256   # line_7_8.P12
+  0       0                  0  0  6   256   # line_7_8.P21
+  0       0                  0  0  6   256   # line_7_8.Q12
+  0       0                  0  0  6   256   # line_7_8.Q21
+  0       0                  0  0  6  1280   # line_7_8.Y.re
+  0       0                  0  0  6  1280   # line_7_8.Y.im
+  0       0                  0  0  6  1280   # line_7_8.Z.re
+  0       0                  0  0  6  1280   # line_7_8.Z.im
+  0  1.0000000000000001E-15  0  0  6   388   # line_9_6.p.ir
+  0  1.0000000000000001E-15  0  0  6   388   # line_9_6.p.ii
+  0  1.0000000000000001E-15  0  0  6   420   # line_9_6.n.ir
+  0  1.0000000000000001E-15  0  0  6   420   # line_9_6.n.ii
+ -1  3.9000000000000000E-02  0  0  1   280   # line_9_6.R
+ -1  1.7000000000000001E-01  0  0  1   280   # line_9_6.X
+ -1       0                  0  0  1   280   # line_9_6.G
+ -1  1.7899999999999999E-01  0  0  1   280   # line_9_6.B
+  0       0                  0  0  6   256   # line_9_6.S_b
+  0  9.9999999999999995E+59  0  0  6   256   # line_9_6.t1
+  0  9.9999999999999995E+59  0  0  6   256   # line_9_6.t2
+  0       1                  0  0  6   258   # line_9_6.opening
+ -1       0                  0  0  1   281   # line_9_6.displayPF
+  0       0                  0  0  6   256   # line_9_6.P12
+  0       0                  0  0  6   256   # line_9_6.P21
+  0       0                  0  0  6   256   # line_9_6.Q12
+  0       0                  0  0  6   256   # line_9_6.Q21
+  0       0                  0  0  6  1280   # line_9_6.Y.re
+  0       0                  0  0  6  1280   # line_9_6.Y.im
+  0       0                  0  0  6  1280   # line_9_6.Z.re
+  0       0                  0  0  6  1280   # line_9_6.Z.im
+  0  1.0000000000000001E-15  0  0  6   388   # line_7_5.p.ir
+  0  1.0000000000000001E-15  0  0  6   388   # line_7_5.p.ii
+  0  1.0000000000000001E-15  0  0  6   420   # line_7_5.n.ir
+  0  1.0000000000000001E-15  0  0  6   420   # line_7_5.n.ii
+ -1  3.2000000000000001E-02  0  0  1   280   # line_7_5.R
+ -1  1.6100000000000000E-01  0  0  1   280   # line_7_5.X
+ -1       0                  0  0  1   280   # line_7_5.G
+ -1  1.5300000000000000E-01  0  0  1   280   # line_7_5.B
+  0       0                  0  0  6   256   # line_7_5.S_b
+  0  9.9999999999999995E+59  0  0  6   256   # line_7_5.t1
+  0  9.9999999999999995E+59  0  0  6   256   # line_7_5.t2
+  0       1                  0  0  6   258   # line_7_5.opening
+ -1       0                  0  0  1   281   # line_7_5.displayPF
+  0       0                  0  0  6   256   # line_7_5.P12
+  0       0                  0  0  6   256   # line_7_5.P21
+  0       0                  0  0  6   256   # line_7_5.Q12
+  0       0                  0  0  6   256   # line_7_5.Q21
+  0       0                  0  0  6  1280   # line_7_5.Y.re
+  0       0                  0  0  6  1280   # line_7_5.Y.im
+  0       0                  0  0  6  1280   # line_7_5.Z.re
+  0       0                  0  0  6  1280   # line_7_5.Z.im
+  0  1.0000000000000001E-15  0  0  6   388   # line_5_4.p.ir
+  0  1.0000000000000001E-15  0  0  6   388   # line_5_4.p.ii
+  0  1.0000000000000001E-15  0  0  6   388   # line_5_4.n.ir
+  0  1.0000000000000001E-15  0  0  6   388   # line_5_4.n.ii
+ -1  1.0000000000000000E-02  0  0  1   280   # line_5_4.R
+ -1  8.5000000000000006E-02  0  0  1   280   # line_5_4.X
+ -1       0                  0  0  1   280   # line_5_4.G
+ -1  8.7999999999999995E-02  0  0  1   280   # line_5_4.B
+  0       0                  0  0  6   256   # line_5_4.S_b
+  0  9.9999999999999995E+59  0  0  6   256   # line_5_4.t1
+  0  9.9999999999999995E+59  0  0  6   256   # line_5_4.t2
+  0       1                  0  0  6   258   # line_5_4.opening
+ -1       0                  0  0  1   281   # line_5_4.displayPF
+  0       0                  0  0  6   256   # line_5_4.P12
+  0       0                  0  0  6   256   # line_5_4.P21
+  0       0                  0  0  6   256   # line_5_4.Q12
+  0       0                  0  0  6   256   # line_5_4.Q21
+  0       0                  0  0  6  1280   # line_5_4.Y.re
+  0       0                  0  0  6  1280   # line_5_4.Y.im
+  0       0                  0  0  6  1280   # line_5_4.Z.re
+  0       0                  0  0  6  1280   # line_5_4.Z.im
+  0  1.0000000000000001E-15  0  0  6   388   # line_6_4.p.ir
+  0  1.0000000000000001E-15  0  0  6   388   # line_6_4.p.ii
+  0  1.0000000000000001E-15  0  0  6   420   # line_6_4.n.ir
+  0  1.0000000000000001E-15  0  0  6   420   # line_6_4.n.ii
+ -1  1.7000000000000001E-02  0  0  1   280   # line_6_4.R
+ -1  9.1999999999999998E-02  0  0  1   280   # line_6_4.X
+ -1       0                  0  0  1   280   # line_6_4.G
+ -1  7.9000000000000001E-02  0  0  1   280   # line_6_4.B
+  0       0                  0  0  6   256   # line_6_4.S_b
+  0  9.9999999999999995E+59  0  0  6   256   # line_6_4.t1
+  0  9.9999999999999995E+59  0  0  6   256   # line_6_4.t2
+  0       1                  0  0  6   258   # line_6_4.opening
+ -1       0                  0  0  1   281   # line_6_4.displayPF
+  0       0                  0  0  6   256   # line_6_4.P12
+  0       0                  0  0  6   256   # line_6_4.P21
+  0       0                  0  0  6   256   # line_6_4.Q12
+  0       0                  0  0  6   256   # line_6_4.Q21
+  0       0                  0  0  6  1280   # line_6_4.Y.re
+  0       0                  0  0  6  1280   # line_6_4.Y.im
+  0       0                  0  0  6  1280   # line_6_4.Z.re
+  0       0                  0  0  6  1280   # line_6_4.Z.im
+  0       0                  0  0  6   388   # xfmr_2_7.p.ir
+  0       0                  0  0  6   388   # xfmr_2_7.p.ii
+  0  1.0000000000000001E-15  0  0  6   420   # xfmr_2_7.n.ir
+  0  1.0000000000000001E-15  0  0  6   420   # xfmr_2_7.n.ii
+  0       0                  0  0  6   256   # xfmr_2_7.S_b
+ -1   18000                  0  0  1   280   # xfmr_2_7.V_b
+  0       0                  0  0  6   256   # xfmr_2_7.Sn
+ -1   18000                  0  0  1   280   # xfmr_2_7.Vn
+ -1       0                  0  0  1   280   # xfmr_2_7.rT
+ -1  6.2500000000000000E-02  0  0  1   280   # xfmr_2_7.xT
+ -1       1                  0  0  1   280   # xfmr_2_7.m
+ -1       0                  0  0  1   281   # xfmr_2_7.displayPF
+  0       0                  0  0  6   256   # xfmr_2_7.P12
+  0       0                  0  0  6   256   # xfmr_2_7.P21
+  0       0                  0  0  6   256   # xfmr_2_7.Q12
+  0       0                  0  0  6   256   # xfmr_2_7.Q21
+  0       0                  0  0  6  1280   # xfmr_2_7.Zn
+  0       0                  0  0  6  1280   # xfmr_2_7.Zb
+  0       0                  0  0  6  1280   # xfmr_2_7.r
+  0       0                  0  0  6  1280   # xfmr_2_7.x
+  0       0                  0  0  6  1281   # xfmr_2_7.tc
+  0       0                  0  0  6   388   # xfmr_3_9.p.ir
+  0       0                  0  0  6   388   # xfmr_3_9.p.ii
+  0  1.0000000000000001E-15  0  0  6   420   # xfmr_3_9.n.ir
+  0  1.0000000000000001E-15  0  0  6   420   # xfmr_3_9.n.ii
+  0       0                  0  0  6   256   # xfmr_3_9.S_b
+ -1   13800                  0  0  1   280   # xfmr_3_9.V_b
+  0       0                  0  0  6   256   # xfmr_3_9.Sn
+ -1   13800                  0  0  1   280   # xfmr_3_9.Vn
+ -1       0                  0  0  1   280   # xfmr_3_9.rT
+ -1  5.8599999999999999E-02  0  0  1   280   # xfmr_3_9.xT
+ -1       1                  0  0  1   280   # xfmr_3_9.m
+ -1       0                  0  0  1   281   # xfmr_3_9.displayPF
+  0       0                  0  0  6   256   # xfmr_3_9.P12
+  0       0                  0  0  6   256   # xfmr_3_9.P21
+  0       0                  0  0  6   256   # xfmr_3_9.Q12
+  0       0                  0  0  6   256   # xfmr_3_9.Q21
+  0       0                  0  0  6  1280   # xfmr_3_9.Zn
+  0       0                  0  0  6  1280   # xfmr_3_9.Zb
+  0       0                  0  0  6  1280   # xfmr_3_9.r
+  0       0                  0  0  6  1280   # xfmr_3_9.x
+  0       0                  0  0  6  1281   # xfmr_3_9.tc
+  0       0                  0  0  6   388   # xfmr_1_4.p.ir
+  0       0                  0  0  6   388   # xfmr_1_4.p.ii
+  0  1.0000000000000001E-15  0  0  6   420   # xfmr_1_4.n.ir
+  0  1.0000000000000001E-15  0  0  6   420   # xfmr_1_4.n.ii
+  0       0                  0  0  6   256   # xfmr_1_4.S_b
+ -1   16500                  0  0  1   280   # xfmr_1_4.V_b
+  0       0                  0  0  6   256   # xfmr_1_4.Sn
+ -1   16500                  0  0  1   280   # xfmr_1_4.Vn
+ -1       0                  0  0  1   280   # xfmr_1_4.rT
+ -1  5.7599999999999998E-02  0  0  1   280   # xfmr_1_4.xT
+ -1       1                  0  0  1   280   # xfmr_1_4.m
+ -1       0                  0  0  1   281   # xfmr_1_4.displayPF
+  0       0                  0  0  6   256   # xfmr_1_4.P12
+  0       0                  0  0  6   256   # xfmr_1_4.P21
+  0       0                  0  0  6   256   # xfmr_1_4.Q12
+  0       0                  0  0  6   256   # xfmr_1_4.Q21
+  0       0                  0  0  6  1280   # xfmr_1_4.Zn
+  0       0                  0  0  6  1280   # xfmr_1_4.Zb
+  0       0                  0  0  6  1280   # xfmr_1_4.r
+  0       0                  0  0  6  1280   # xfmr_1_4.x
+  0       0                  0  0  6  1281   # xfmr_1_4.tc
+  0       0                  0  0  6   256   # gen1.S_b
+ -1       0                  0  0  1   281   # gen1.enableS_b
+ -1   16500                  0  0  1   280   # gen1.V_b
+ -1       0                  0  0  1   281   # gen1.enableV_b
+  0       0                  0  0  6   256   # gen1.fn
+ -1       0                  0  0  1   281   # gen1.enablefn
+ -1  7.1641024000000000E+07  0  0  1   280   # gen1.P_0
+ -1       0                  0  0  1   281   # gen1.enableP_0
+ -1  2.7045924000000000E+07  0  0  1   280   # gen1.Q_0
+ -1       0                  0  0  1   281   # gen1.enableQ_0
+ -1  1.0399999618530273E+00  0  0  1   280   # gen1.v_0
+ -1       0                  0  0  1   281   # gen1.enablev_0
+ -1       0                  0  0  1   280   # gen1.angle_0
+ -1       0                  0  0  1   281   # gen1.enableangle_0
+ -1       0                  0  0  1   281   # gen1.displayPF
+ -1       0                  0  0  1   281   # gen1.enabledisplayPF
+ -1       1                  0  0  1   280   # gen1.height_3
+ -1       1                  0  0  1   280   # gen1.tstart_3
+ -1       0                  0  0  1   281   # gen1.refdisturb_3
+  0       0                  0  0  6   256   # gen1.gen.S_b
+  0       1                  0  0  6   257   # gen1.gen.enableS_b
+  0       0                  0  0  6   256   # gen1.gen.V_b
+  0       1                  0  0  6   257   # gen1.gen.enableV_b
+  0       0                  0  0  6   256   # gen1.gen.fn
+  0       0                  0  0  6   257   # gen1.gen.enablefn
+  0       0                  0  0  6   256   # gen1.gen.P_0
+  0       1                  0  0  6   257   # gen1.gen.enableP_0
+  0       0                  0  0  6   256   # gen1.gen.Q_0
+  0       1                  0  0  6   257   # gen1.gen.enableQ_0
+  0       0                  0  0  6   256   # gen1.gen.v_0
+  0       1                  0  0  6   257   # gen1.gen.enablev_0
+  0       0                  0  0  6   256   # gen1.gen.angle_0
+  0       1                  0  0  6   257   # gen1.gen.enableangle_0
+ -1       0                  0  0  1   281   # gen1.gen.displayPF
+  0       0                  0  0  6   257   # gen1.gen.enabledisplayPF
+ -1  1.0000000000000000E+08  0  0  1   280   # gen1.gen.Sn
+ -1   16500                  0  0  1   280   # gen1.gen.Vn
+ -1       0                  0  0  1   280   # gen1.gen.ra
+ -1  6.0800000000000000E-02  0  0  1   280   # gen1.gen.x1d
+ -1  4.7280000000000001E+01  0  0  1   280   # gen1.gen.M
+  0       0                  0  0  6   256   # gen1.gen.D
+ -1       0                  0  0  2   272   # gen1.gen.delta
+  0       0                  0  0  3   256   # gen1.gen.der(delta)
+ -1       1                  0  0  2   280   # gen1.gen.w
+  0       0                  0  0  3   256   # gen1.gen.der(w)
+  0       0                  0  0  6   256   # gen1.gen.v
+  0       0                  0  0  6   256   # gen1.gen.P
+  0       0                  0  0  6   256   # gen1.gen.Q
+  0       0                  0  0  6   256   # gen1.gen.vf
+  0       0                  0  0  6   256   # gen1.gen.anglev
+  0       0                  0  0  6   256   # gen1.gen.vd
+  0       0                  0  0  6   256   # gen1.gen.vq
+  0       0                  0  0  6   256   # gen1.gen.id
+  0       0                  0  0  6   256   # gen1.gen.iq
+  0       0                  0  0  6  1280   # gen1.gen.pe
+  0       0                  0  0  6  1280   # gen1.gen.vf_MB
+  0       0                  0  0  6  1280   # gen1.gen.w_b
+  0       0                  0  0  6  1280   # gen1.gen.S_SBtoMB
+  0       0                  0  0  6  1280   # gen1.gen.I_MBtoSB
+  0       0                  0  0  6  1280   # gen1.gen.V_MBtoSB
+  0       0                  0  0  6  1280   # gen1.gen.Z_MBtoSB
+  0       0                  0  0  6  1280   # gen1.gen.p0
+  0       0                  0  0  6  1280   # gen1.gen.q0
+  0       0                  0  0  6  1280   # gen1.gen.Vt0.re
+  0       0                  0  0  6  1280   # gen1.gen.Vt0.im
+  0       0                  0  0  6  1280   # gen1.gen.S0.re
+  0       0                  0  0  6  1280   # gen1.gen.S0.im
+  0       0                  0  0  6  1280   # gen1.gen.I0.re
+  0       0                  0  0  6  1280   # gen1.gen.I0.im
+  0       0                  0  0  6  1280   # gen1.gen.vr0
+  0       0                  0  0  6  1280   # gen1.gen.vi0
+  0       0                  0  0  6  1280   # gen1.gen.ir0
+  0       0                  0  0  6  1280   # gen1.gen.ii0
+  0       0                  0  0  6  1280   # gen1.gen.xq0
+  0       0                  0  0  6  1280   # gen1.gen.delta0
+  0       0                  0  0  6  1280   # gen1.gen.Vdq0.re
+  0       0                  0  0  6  1280   # gen1.gen.Vdq0.im
+  0       0                  0  0  6  1280   # gen1.gen.Idq0.re
+  0       0                  0  0  6  1280   # gen1.gen.Idq0.im
+  0       0                  0  0  6  1280   # gen1.gen.vd0
+  0       0                  0  0  6  1280   # gen1.gen.vq0
+  0       0                  0  0  6  1280   # gen1.gen.id0
+  0       0                  0  0  6  1280   # gen1.gen.iq0
+  0       0                  0  0  6  1280   # gen1.gen.pm00
+ -1  1.4599999999999999E-01  0  0  1   280   # gen1.gen.xd
+  0  9.6900000000000000E-02  0  0  6   256   # gen1.gen.xq
+  0  9.6900000000000000E-02  0  0  6   256   # gen1.gen.x1q
+ -1  8.9600000000000009E+00  0  0  1   280   # gen1.gen.T1d0
+ -1  3.1000000000000000E-01  0  0  1   280   # gen1.gen.T1q0
+ -1       0                  0  0  2   272   # gen1.gen.e1q
+  0       0                  0  0  3   256   # gen1.gen.der(e1q)
+ -1       0                  0  0  2   272   # gen1.gen.e1d
+  0       0                  0  0  3   256   # gen1.gen.der(e1d)
+  0       0                  0  0  6  1280   # gen1.gen.vf00
+  0       0                  0  0  6  1280   # gen1.gen.e1q0
+  0       0                  0  0  6  1280   # gen1.gen.e1d0
+ -1       7                  0  0  1   280   # gen1.aVRtypeIII.vfmax
+ -1 -6.4000000000000004E+00  0  0  1   280   # gen1.aVRtypeIII.vfmin
+ -1      10                  0  0  1   280   # gen1.aVRtypeIII.K0
+ -1       1                  0  0  1   280   # gen1.aVRtypeIII.T2
+ -1       1                  0  0  1   280   # gen1.aVRtypeIII.T1
+ -1  1.0000000000000000E-04  0  0  1   280   # gen1.aVRtypeIII.Te
+ -1  1.4999999999999999E-02  0  0  1   280   # gen1.aVRtypeIII.Tr
+ -1       0                  0  0  2   272   # gen1.aVRtypeIII.vm
+  0       0                  0  0  3   256   # gen1.aVRtypeIII.der(vm)
+ -1       0                  0  0  2   272   # gen1.aVRtypeIII.vr
+  0       0                  0  0  3   256   # gen1.aVRtypeIII.der(vr)
+ -1       0                  0  0  2   272   # gen1.aVRtypeIII.vf1
+  0       0                  0  0  3   256   # gen1.aVRtypeIII.der(vf1)
+  0       1                  0  0  6   256   # gen1.aVRtypeIII.limiter1.uMax
+  0       0                  0  0  6   256   # gen1.aVRtypeIII.limiter1.uMin
+  0       0                  0  0  6   257   # gen1.aVRtypeIII.limiter1.strict
+  0       2                  1  4  6   258   # gen1.aVRtypeIII.limiter1.homotopyType
+  0       0                  0  0  6  1280   # gen1.aVRtypeIII.vref
+  0       0                  0  0  6  1280   # gen1.aVRtypeIII.s0
+ -1       0                  0  0  1   280   # gen1.pss_off.k
+  0       0                  0  0  6   256   # gen2.S_b
+ -1       0                  0  0  1   281   # gen2.enableS_b
+ -1   18000                  0  0  1   280   # gen2.V_b
+ -1       0                  0  0  1   281   # gen2.enableV_b
+  0       0                  0  0  6   256   # gen2.fn
+ -1       0                  0  0  1   281   # gen2.enablefn
+ -1  1.6300000000000000E+08  0  0  1   280   # gen2.P_0
+ -1       0                  0  0  1   281   # gen2.enableP_0
+ -1  6.6536605000000000E+06  0  0  1   280   # gen2.Q_0
+ -1       0                  0  0  1   281   # gen2.enableQ_0
+ -1  1.0249999761581421E+00  0  0  1   280   # gen2.v_0
+ -1       0                  0  0  1   281   # gen2.enablev_0
+ -1  1.6196665167808533E-01  0  0  1   280   # gen2.angle_0
+ -1       0                  0  0  1   281   # gen2.enableangle_0
+ -1       0                  0  0  1   281   # gen2.displayPF
+ -1       0                  0  0  1   281   # gen2.enabledisplayPF
+ -1       1                  0  0  1   280   # gen2.height_1
+ -1       1                  0  0  1   280   # gen2.tstart_1
+ -1       0                  0  0  1   281   # gen2.refdisturb_1
+  0       0                  0  0  6   256   # gen2.gen.S_b
+  0       1                  0  0  6   257   # gen2.gen.enableS_b
+  0       0                  0  0  6   256   # gen2.gen.V_b
+  0       1                  0  0  6   257   # gen2.gen.enableV_b
+  0       0                  0  0  6   256   # gen2.gen.fn
+  0       0                  0  0  6   257   # gen2.gen.enablefn
+  0       0                  0  0  6   256   # gen2.gen.P_0
+  0       1                  0  0  6   257   # gen2.gen.enableP_0
+  0       0                  0  0  6   256   # gen2.gen.Q_0
+  0       1                  0  0  6   257   # gen2.gen.enableQ_0
+  0       0                  0  0  6   256   # gen2.gen.v_0
+  0       1                  0  0  6   257   # gen2.gen.enablev_0
+  0       0                  0  0  6   256   # gen2.gen.angle_0
+  0       1                  0  0  6   257   # gen2.gen.enableangle_0
+ -1       0                  0  0  1   281   # gen2.gen.displayPF
+  0       0                  0  0  6   257   # gen2.gen.enabledisplayPF
+ -1  1.0000000000000000E+08  0  0  1   280   # gen2.gen.Sn
+ -1   18000                  0  0  1   280   # gen2.gen.Vn
+ -1       0                  0  0  1   280   # gen2.gen.ra
+ -1  1.1980000000000000E-01  0  0  1   280   # gen2.gen.x1d
+ -1  1.2800000000000001E+01  0  0  1   280   # gen2.gen.M
+  0       0                  0  0  6   256   # gen2.gen.D
+ -1       0                  0  0  2   272   # gen2.gen.delta
+  0       0                  0  0  3   256   # gen2.gen.der(delta)
+ -1       1                  0  0  2   280   # gen2.gen.w
+  0       0                  0  0  3   256   # gen2.gen.der(w)
+  0       0                  0  0  6   256   # gen2.gen.v
+  0       0                  0  0  6   256   # gen2.gen.P
+  0       0                  0  0  6   256   # gen2.gen.Q
+  0       0                  0  0  6   256   # gen2.gen.vf
+  0       0                  0  0  6   256   # gen2.gen.anglev
+  0       0                  0  0  6   256   # gen2.gen.vd
+  0       0                  0  0  6   256   # gen2.gen.vq
+  0       0                  0  0  6   256   # gen2.gen.id
+  0       0                  0  0  6   256   # gen2.gen.iq
+  0       0                  0  0  6  1280   # gen2.gen.pe
+  0       0                  0  0  6  1280   # gen2.gen.vf_MB
+  0       0                  0  0  6  1280   # gen2.gen.w_b
+  0       0                  0  0  6  1280   # gen2.gen.S_SBtoMB
+  0       0                  0  0  6  1280   # gen2.gen.I_MBtoSB
+  0       0                  0  0  6  1280   # gen2.gen.V_MBtoSB
+  0       0                  0  0  6  1280   # gen2.gen.Z_MBtoSB
+  0       0                  0  0  6  1280   # gen2.gen.p0
+  0       0                  0  0  6  1280   # gen2.gen.q0
+  0       0                  0  0  6  1280   # gen2.gen.Vt0.re
+  0       0                  0  0  6  1280   # gen2.gen.Vt0.im
+  0       0                  0  0  6  1280   # gen2.gen.S0.re
+  0       0                  0  0  6  1280   # gen2.gen.S0.im
+  0       0                  0  0  6  1280   # gen2.gen.I0.re
+  0       0                  0  0  6  1280   # gen2.gen.I0.im
+  0       0                  0  0  6  1280   # gen2.gen.vr0
+  0       0                  0  0  6  1280   # gen2.gen.vi0
+  0       0                  0  0  6  1280   # gen2.gen.ir0
+  0       0                  0  0  6  1280   # gen2.gen.ii0
+  0       0                  0  0  6  1280   # gen2.gen.xq0
+  0       0                  0  0  6  1280   # gen2.gen.delta0
+  0       0                  0  0  6  1280   # gen2.gen.Vdq0.re
+  0       0                  0  0  6  1280   # gen2.gen.Vdq0.im
+  0       0                  0  0  6  1280   # gen2.gen.Idq0.re
+  0       0                  0  0  6  1280   # gen2.gen.Idq0.im
+  0       0                  0  0  6  1280   # gen2.gen.vd0
+  0       0                  0  0  6  1280   # gen2.gen.vq0
+  0       0                  0  0  6  1280   # gen2.gen.id0
+  0       0                  0  0  6  1280   # gen2.gen.iq0
+  0       0                  0  0  6  1280   # gen2.gen.pm00
+ -1  8.9580000000000004E-01  0  0  1   280   # gen2.gen.xd
+  0  8.6450000000000005E-01  0  0  6   256   # gen2.gen.xq
+  0  1.9689999999999999E-01  0  0  6   256   # gen2.gen.x1q
+ -1       6                  0  0  1   280   # gen2.gen.T1d0
+ -1  5.3500000000000003E-01  0  0  1   280   # gen2.gen.T1q0
+ -1       0                  0  0  2   272   # gen2.gen.e1q
+  0       0                  0  0  3   256   # gen2.gen.der(e1q)
+ -1       0                  0  0  2   272   # gen2.gen.e1d
+  0       0                  0  0  3   256   # gen2.gen.der(e1d)
+  0       0                  0  0  6  1280   # gen2.gen.vf00
+  0       0                  0  0  6  1280   # gen2.gen.e1q0
+  0       0                  0  0  6  1280   # gen2.gen.e1d0
+ -1       7                  0  0  1   280   # gen2.aVRtypeIII.vfmax
+ -1 -6.4000000000000004E+00  0  0  1   280   # gen2.aVRtypeIII.vfmin
+ -1      10                  0  0  1   280   # gen2.aVRtypeIII.K0
+ -1       1                  0  0  1   280   # gen2.aVRtypeIII.T2
+ -1       1                  0  0  1   280   # gen2.aVRtypeIII.T1
+ -1  1.0000000000000000E-04  0  0  1   280   # gen2.aVRtypeIII.Te
+ -1  1.4999999999999999E-02  0  0  1   280   # gen2.aVRtypeIII.Tr
+ -1       0                  0  0  2   272   # gen2.aVRtypeIII.vm
+  0       0                  0  0  3   256   # gen2.aVRtypeIII.der(vm)
+ -1       0                  0  0  2   272   # gen2.aVRtypeIII.vr
+  0       0                  0  0  3   256   # gen2.aVRtypeIII.der(vr)
+ -1       0                  0  0  2   272   # gen2.aVRtypeIII.vf1
+  0       0                  0  0  3   256   # gen2.aVRtypeIII.der(vf1)
+  0       1                  0  0  6   256   # gen2.aVRtypeIII.limiter1.uMax
+  0       0                  0  0  6   256   # gen2.aVRtypeIII.limiter1.uMin
+  0       0                  0  0  6   257   # gen2.aVRtypeIII.limiter1.strict
+  0       2                  1  4  6   258   # gen2.aVRtypeIII.limiter1.homotopyType
+  0       0                  0  0  6  1280   # gen2.aVRtypeIII.vref
+  0       0                  0  0  6  1280   # gen2.aVRtypeIII.s0
+ -1       0                  0  0  1   280   # gen2.pss_off.k
+  0       0                  0  0  6   256   # gen3.S_b
+ -1       0                  0  0  1   281   # gen3.enableS_b
+ -1   13800                  0  0  1   280   # gen3.V_b
+ -1       0                  0  0  1   281   # gen3.enableV_b
+  0       0                  0  0  6   256   # gen3.fn
+ -1       0                  0  0  1   281   # gen3.enablefn
+ -1  8.5000000000000000E+07  0  0  1   280   # gen3.P_0
+ -1       0                  0  0  1   281   # gen3.enableP_0
+ -1 -1.0859709000000000E+07  0  0  1   280   # gen3.Q_0
+ -1       0                  0  0  1   281   # gen3.enableQ_0
+ -1  1.0249999761581421E+00  0  0  1   280   # gen3.v_0
+ -1       0                  0  0  1   281   # gen3.enablev_0
+ -1  8.1415273249149323E-02  0  0  1   280   # gen3.angle_0
+ -1       0                  0  0  1   281   # gen3.enableangle_0
+ -1       0                  0  0  1   281   # gen3.displayPF
+ -1       0                  0  0  1   281   # gen3.enabledisplayPF
+ -1       1                  0  0  1   280   # gen3.height_2
+ -1       1                  0  0  1   280   # gen3.tstart_2
+ -1       0                  0  0  1   281   # gen3.refdisturb_2
+  0       0                  0  0  6   256   # gen3.gen.S_b
+  0       1                  0  0  6   257   # gen3.gen.enableS_b
+  0       0                  0  0  6   256   # gen3.gen.V_b
+  0       1                  0  0  6   257   # gen3.gen.enableV_b
+  0       0                  0  0  6   256   # gen3.gen.fn
+  0       0                  0  0  6   257   # gen3.gen.enablefn
+  0       0                  0  0  6   256   # gen3.gen.P_0
+  0       1                  0  0  6   257   # gen3.gen.enableP_0
+  0       0                  0  0  6   256   # gen3.gen.Q_0
+  0       1                  0  0  6   257   # gen3.gen.enableQ_0
+  0       0                  0  0  6   256   # gen3.gen.v_0
+  0       1                  0  0  6   257   # gen3.gen.enablev_0
+  0       0                  0  0  6   256   # gen3.gen.angle_0
+  0       1                  0  0  6   257   # gen3.gen.enableangle_0
+ -1       0                  0  0  1   281   # gen3.gen.displayPF
+  0       0                  0  0  6   257   # gen3.gen.enabledisplayPF
+ -1  1.0000000000000000E+08  0  0  1   280   # gen3.gen.Sn
+ -1   13800                  0  0  1   280   # gen3.gen.Vn
+ -1       0                  0  0  1   280   # gen3.gen.ra
+ -1  1.8129999999999999E-01  0  0  1   280   # gen3.gen.x1d
+ -1  6.0199999999999996E+00  0  0  1   280   # gen3.gen.M
+  0       0                  0  0  6   256   # gen3.gen.D
+ -1       0                  0  0  2   272   # gen3.gen.delta
+  0       0                  0  0  3   256   # gen3.gen.der(delta)
+ -1       1                  0  0  2   280   # gen3.gen.w
+  0       0                  0  0  3   256   # gen3.gen.der(w)
+  0       0                  0  0  6   256   # gen3.gen.v
+  0       0                  0  0  6   256   # gen3.gen.P
+  0       0                  0  0  6   256   # gen3.gen.Q
+  0       0                  0  0  6   256   # gen3.gen.vf
+  0       0                  0  0  6   256   # gen3.gen.anglev
+  0       0                  0  0  6   256   # gen3.gen.vd
+  0       0                  0  0  6   256   # gen3.gen.vq
+  0       0                  0  0  6   256   # gen3.gen.id
+  0       0                  0  0  6   256   # gen3.gen.iq
+  0       0                  0  0  6  1280   # gen3.gen.pe
+  0       0                  0  0  6  1280   # gen3.gen.vf_MB
+  0       0                  0  0  6  1280   # gen3.gen.w_b
+  0       0                  0  0  6  1280   # gen3.gen.S_SBtoMB
+  0       0                  0  0  6  1280   # gen3.gen.I_MBtoSB
+  0       0                  0  0  6  1280   # gen3.gen.V_MBtoSB
+  0       0                  0  0  6  1280   # gen3.gen.Z_MBtoSB
+  0       0                  0  0  6  1280   # gen3.gen.p0
+  0       0                  0  0  6  1280   # gen3.gen.q0
+  0       0                  0  0  6  1280   # gen3.gen.Vt0.re
+  0       0                  0  0  6  1280   # gen3.gen.Vt0.im
+  0       0                  0  0  6  1280   # gen3.gen.S0.re
+  0       0                  0  0  6  1280   # gen3.gen.S0.im
+  0       0                  0  0  6  1280   # gen3.gen.I0.re
+  0       0                  0  0  6  1280   # gen3.gen.I0.im
+  0       0                  0  0  6  1280   # gen3.gen.vr0
+  0       0                  0  0  6  1280   # gen3.gen.vi0
+  0       0                  0  0  6  1280   # gen3.gen.ir0
+  0       0                  0  0  6  1280   # gen3.gen.ii0
+  0       0                  0  0  6  1280   # gen3.gen.xq0
+  0       0                  0  0  6  1280   # gen3.gen.delta0
+  0       0                  0  0  6  1280   # gen3.gen.Vdq0.re
+  0       0                  0  0  6  1280   # gen3.gen.Vdq0.im
+  0       0                  0  0  6  1280   # gen3.gen.Idq0.re
+  0       0                  0  0  6  1280   # gen3.gen.Idq0.im
+  0       0                  0  0  6  1280   # gen3.gen.vd0
+  0       0                  0  0  6  1280   # gen3.gen.vq0
+  0       0                  0  0  6  1280   # gen3.gen.id0
+  0       0                  0  0  6  1280   # gen3.gen.iq0
+  0       0                  0  0  6  1280   # gen3.gen.pm00
+ -1  1.3125000000000000E+00  0  0  1   280   # gen3.gen.xd
+  0  1.2578000000000000E+00  0  0  6   256   # gen3.gen.xq
+  0  2.5000000000000000E-01  0  0  6   256   # gen3.gen.x1q
+ -1  5.8899999999999997E+00  0  0  1   280   # gen3.gen.T1d0
+ -1  5.9999999999999998E-01  0  0  1   280   # gen3.gen.T1q0
+ -1       0                  0  0  2   272   # gen3.gen.e1q
+  0       0                  0  0  3   256   # gen3.gen.der(e1q)
+ -1       0                  0  0  2   272   # gen3.gen.e1d
+  0       0                  0  0  3   256   # gen3.gen.der(e1d)
+  0       0                  0  0  6  1280   # gen3.gen.vf00
+  0       0                  0  0  6  1280   # gen3.gen.e1q0
+  0       0                  0  0  6  1280   # gen3.gen.e1d0
+ -1       7                  0  0  1   280   # gen3.aVRtypeIII.vfmax
+ -1 -6.4000000000000004E+00  0  0  1   280   # gen3.aVRtypeIII.vfmin
+ -1      10                  0  0  1   280   # gen3.aVRtypeIII.K0
+ -1       1                  0  0  1   280   # gen3.aVRtypeIII.T2
+ -1       1                  0  0  1   280   # gen3.aVRtypeIII.T1
+ -1  1.0000000000000000E-04  0  0  1   280   # gen3.aVRtypeIII.Te
+ -1  1.4999999999999999E-02  0  0  1   280   # gen3.aVRtypeIII.Tr
+ -1       0                  0  0  2   272   # gen3.aVRtypeIII.vm
+  0       0                  0  0  3   256   # gen3.aVRtypeIII.der(vm)
+ -1       0                  0  0  2   272   # gen3.aVRtypeIII.vr
+  0       0                  0  0  3   256   # gen3.aVRtypeIII.der(vr)
+ -1       0                  0  0  2   272   # gen3.aVRtypeIII.vf1
+  0       0                  0  0  3   256   # gen3.aVRtypeIII.der(vf1)
+  0       1                  0  0  6   256   # gen3.aVRtypeIII.limiter1.uMax
+  0       0                  0  0  6   256   # gen3.aVRtypeIII.limiter1.uMin
+  0       0                  0  0  6   257   # gen3.aVRtypeIII.limiter1.strict
+  0       2                  1  4  6   258   # gen3.aVRtypeIII.limiter1.homotopyType
+  0       0                  0  0  6  1280   # gen3.aVRtypeIII.vref
+  0       0                  0  0  6  1280   # gen3.aVRtypeIII.s0
+ -1       0                  0  0  1   280   # gen3.pss_off.k
+  0       0                  0  0  6   256   # load6.S_b
+  0       1                  0  0  6   257   # load6.enableS_b
+ -1  4.0000000000000000E+05  0  0  1   280   # load6.V_b
+  0       0                  0  0  6   257   # load6.enableV_b
+  0       0                  0  0  6   256   # load6.fn
+  0       0                  0  0  6   257   # load6.enablefn
+ -1  9.0000000000000000E+07  0  0  1   280   # load6.P_0
+  0       1                  0  0  6   257   # load6.enableP_0
+ -1  3.0000000000000000E+07  0  0  1   280   # load6.Q_0
+  0       1                  0  0  6   257   # load6.enableQ_0
+ -1       1                  0  0  1   280   # load6.v_0
+  0       1                  0  0  6   257   # load6.enablev_0
+ -1       0                  0  0  1   280   # load6.angle_0
+  0       1                  0  0  6   257   # load6.enableangle_0
+ -1       0                  0  0  1   281   # load6.displayPF
+  0       0                  0  0  6   257   # load6.enabledisplayPF
+  0       0                  0  0  6   256   # load6.Sn
+  0       0                  0  0  6   256   # load6.v
+  0       0                  0  0  6   256   # load6.anglev
+  0       0                  0  0  6   256   # load6.P
+  0       0                  0  0  6   256   # load6.Q
+  0  1.0000000000000001E-15  0  0  6   420   # load6.p.ir
+  0  1.0000000000000001E-15  0  0  6   420   # load6.p.ii
+  0       0                  0  0  6  1280   # load6.CoB
+  0  1.2000000000000000E+00  0  0  6   256   # load6.Vmax
+  0  8.0000000000000004E-01  0  0  6   256   # load6.Vmin
+  0       1                  0  0  6   257   # load6.forcePQ
+  0       0                  0  0  6   256   # load8.S_b
+  0       1                  0  0  6   257   # load8.enableS_b
+ -1  4.0000000000000000E+05  0  0  1   280   # load8.V_b
+  0       0                  0  0  6   257   # load8.enableV_b
+  0       0                  0  0  6   256   # load8.fn
+  0       0                  0  0  6   257   # load8.enablefn
+ -1  1.0000000000000000E+08  0  0  1   280   # load8.P_0
+  0       1                  0  0  6   257   # load8.enableP_0
+ -1  3.5000000000000000E+07  0  0  1   280   # load8.Q_0
+  0       1                  0  0  6   257   # load8.enableQ_0
+ -1       1                  0  0  1   280   # load8.v_0
+  0       1                  0  0  6   257   # load8.enablev_0
+ -1       0                  0  0  1   280   # load8.angle_0
+  0       1                  0  0  6   257   # load8.enableangle_0
+ -1       0                  0  0  1   281   # load8.displayPF
+  0       0                  0  0  6   257   # load8.enabledisplayPF
+  0       0                  0  0  6   256   # load8.Sn
+  0       0                  0  0  6   256   # load8.v
+  0       0                  0  0  6   256   # load8.anglev
+  0       0                  0  0  6   256   # load8.P
+  0       0                  0  0  6   256   # load8.Q
+  0  1.0000000000000001E-15  0  0  6   420   # load8.p.ir
+  0  1.0000000000000001E-15  0  0  6   420   # load8.p.ii
+  0       0                  0  0  6  1280   # load8.CoB
+  0  1.2000000000000000E+00  0  0  6   256   # load8.Vmax
+  0  8.0000000000000004E-01  0  0  6   256   # load8.Vmin
+  0       1                  0  0  6   257   # load8.forcePQ
+  0       0                  0  0  6   256   # load5.S_b
+  0       1                  0  0  6   257   # load5.enableS_b
+ -1  4.0000000000000000E+05  0  0  1   280   # load5.V_b
+  0       0                  0  0  6   257   # load5.enableV_b
+  0       0                  0  0  6   256   # load5.fn
+  0       0                  0  0  6   257   # load5.enablefn
+ -1  1.2500000000000000E+08  0  0  1   280   # load5.P_0
+  0       1                  0  0  6   257   # load5.enableP_0
+ -1  5.0000000000000000E+07  0  0  1   280   # load5.Q_0
+  0       1                  0  0  6   257   # load5.enableQ_0
+ -1       1                  0  0  1   280   # load5.v_0
+  0       1                  0  0  6   257   # load5.enablev_0
+ -1       0                  0  0  1   280   # load5.angle_0
+  0       1                  0  0  6   257   # load5.enableangle_0
+ -1       0                  0  0  1   281   # load5.displayPF
+  0       0                  0  0  6   257   # load5.enabledisplayPF
+  0       0                  0  0  6   256   # load5.Sn
+  0       0                  0  0  6   256   # load5.v
+  0       0                  0  0  6   256   # load5.anglev
+  0       0                  0  0  6   256   # load5.P
+  0       0                  0  0  6   256   # load5.Q
+  0  1.0000000000000001E-15  0  0  6   420   # load5.p.ir
+  0  1.0000000000000001E-15  0  0  6   420   # load5.p.ii
+  0       0                  0  0  6  1280   # load5.CoB
+  0  1.2000000000000000E+00  0  0  6   256   # load5.Vmax
+  0  8.0000000000000004E-01  0  0  6   256   # load5.Vmin
+  0       1                  0  0  6   257   # load5.forcePQ
+
+
+# Matrix with 6 columns defining the initial value calculation
+# (columns 5 and 6 are not utilized for the calculation but are
+#  reported by dymosim via dymosim -i for user convenience):
+#
+# column 1: Type of initial value
+#           = -2: special case: for continuing simulation (column 2 = value)
+#           = -1: fixed value (column 2 = fixed value)
+#           =  0: free value, i.e., no restriction (column 2 = initial value)
+#           >  0: desired value (column 1 = weight for optimization
+#                                column 2 = desired value)
+#                 use weight=1, since automatic scaling usually
+#                 leads to equally weighted terms
+# column 2: fixed, free or desired value according to column 1.
+# column 3: Minimum value (ignored, if Minimum >= Maximum).
+# column 4: Maximum value (ignored, if Minimum >= Maximum).
+#           Minimum and maximum restrict the search range in initial
+#           value calculation. They might also be used for scaling.
+# column 5: Category of variable.
+#           = 1: parameter.
+#           = 2: state.
+#           = 3: state derivative.
+#           = 4: output.
+#           = 5: input.
+#           = 6: auxiliary variable.
+# column 6: Data type of variable and flags according to dsBaseType
+#  <value>&3= 0: real.
+#  <value>&3= 1: boolean.
+#  <value>&3= 2: integer.
+#
+# Initial values are calculated according to the following procedure:
+#
+# Initial values are calculated according to the following procedure:
+#
+# - If parameters, states and inputs are FIXED, and other variables
+#   are FREE, the initialization is performed in the normal way.
+#
+# - If parameters and inputs are FIXED, and all other variables
+#   have special case for continue (-2 in 1st column), or FREE
+#   the initialization is ignored and variables are set to these values.
+#   This is intended to continue the simulation.
+#
+#   Which variables will be important for initialization and continue
+#   is indicated by value in column 6 & dsStartMasks.
+#
+char initialDescription(827,99)
+System base [V.A|MV.A]
+System frequency [Hz]
+System base power [V.A|MV.A]
+Enable S_b in parameter list [:#(type=Boolean)]
+Base voltage of the bus [V|kV]
+Enable V_b in parameter list [:#(type=Boolean)]
+System frequency [Hz]
+Enable fn in parameter list [:#(type=Boolean)]
+Initial active power [W|MW]
+Enable P_0 in parameter list [:#(type=Boolean)]
+Initial reactive power [var|Mvar]
+Enable Q_0 in parameter list [:#(type=Boolean)]
+Initial voltage magnitude [1]
+Enable v_0 in parameter list [:#(type=Boolean)]
+Initial voltage angle [rad|deg]
+Enable angle_0 in parameter list [:#(type=Boolean)]
+Display power flow: [:#(type=Boolean)]
+Enable displayPF in parameter list [:#(type=Boolean)]
+Real part of the voltage [1]
+Imaginary part of the voltage [1]
+Real part of the current [1]
+Imaginary part of the current [1]
+Bus voltage magnitude [1]
+Bus voltage angle [rad|deg]
+Angle in degrees for display purposes [deg]
+System base power [V.A|MV.A]
+Enable S_b in parameter list [:#(type=Boolean)]
+Base voltage of the bus [V|kV]
+Enable V_b in parameter list [:#(type=Boolean)]
+System frequency [Hz]
+Enable fn in parameter list [:#(type=Boolean)]
+Initial active power [W|MW]
+Enable P_0 in parameter list [:#(type=Boolean)]
+Initial reactive power [var|Mvar]
+Enable Q_0 in parameter list [:#(type=Boolean)]
+Initial voltage magnitude [1]
+Enable v_0 in parameter list [:#(type=Boolean)]
+Initial voltage angle [rad|deg]
+Enable angle_0 in parameter list [:#(type=Boolean)]
+Display power flow: [:#(type=Boolean)]
+Enable displayPF in parameter list [:#(type=Boolean)]
+Real part of the voltage [1]
+Imaginary part of the voltage [1]
+Real part of the current [1]
+Imaginary part of the current [1]
+Bus voltage magnitude [1]
+Bus voltage angle [rad|deg]
+Angle in degrees for display purposes [deg]
+System base power [V.A|MV.A]
+Enable S_b in parameter list [:#(type=Boolean)]
+Base voltage of the bus [V|kV]
+Enable V_b in parameter list [:#(type=Boolean)]
+System frequency [Hz]
+Enable fn in parameter list [:#(type=Boolean)]
+Initial active power [W|MW]
+Enable P_0 in parameter list [:#(type=Boolean)]
+Initial reactive power [var|Mvar]
+Enable Q_0 in parameter list [:#(type=Boolean)]
+Initial voltage magnitude [1]
+Enable v_0 in parameter list [:#(type=Boolean)]
+Initial voltage angle [rad|deg]
+Enable angle_0 in parameter list [:#(type=Boolean)]
+Display power flow: [:#(type=Boolean)]
+Enable displayPF in parameter list [:#(type=Boolean)]
+Real part of the voltage [1]
+Imaginary part of the voltage [1]
+Real part of the current [1]
+Imaginary part of the current [1]
+Bus voltage magnitude [1]
+Bus voltage angle [rad|deg]
+Angle in degrees for display purposes [deg]
+System base power [V.A|MV.A]
+Enable S_b in parameter list [:#(type=Boolean)]
+Base voltage of the bus [V|kV]
+Enable V_b in parameter list [:#(type=Boolean)]
+System frequency [Hz]
+Enable fn in parameter list [:#(type=Boolean)]
+Initial active power [W|MW]
+Enable P_0 in parameter list [:#(type=Boolean)]
+Initial reactive power [var|Mvar]
+Enable Q_0 in parameter list [:#(type=Boolean)]
+Initial voltage magnitude [1]
+Enable v_0 in parameter list [:#(type=Boolean)]
+Initial voltage angle [rad|deg]
+Enable angle_0 in parameter list [:#(type=Boolean)]
+Display power flow: [:#(type=Boolean)]
+Enable displayPF in parameter list [:#(type=Boolean)]
+Real part of the voltage [1]
+Imaginary part of the voltage [1]
+Real part of the current [1]
+Imaginary part of the current [1]
+Bus voltage magnitude [1]
+Bus voltage angle [rad|deg]
+Angle in degrees for display purposes [deg]
+System base power [V.A|MV.A]
+Enable S_b in parameter list [:#(type=Boolean)]
+Base voltage of the bus [V|kV]
+Enable V_b in parameter list [:#(type=Boolean)]
+System frequency [Hz]
+Enable fn in parameter list [:#(type=Boolean)]
+Initial active power [W|MW]
+Enable P_0 in parameter list [:#(type=Boolean)]
+Initial reactive power [var|Mvar]
+Enable Q_0 in parameter list [:#(type=Boolean)]
+Initial voltage magnitude [1]
+Enable v_0 in parameter list [:#(type=Boolean)]
+Initial voltage angle [rad|deg]
+Enable angle_0 in parameter list [:#(type=Boolean)]
+Display power flow: [:#(type=Boolean)]
+Enable displayPF in parameter list [:#(type=Boolean)]
+Real part of the voltage [1]
+Imaginary part of the voltage [1]
+Real part of the current [1]
+Imaginary part of the current [1]
+Bus voltage magnitude [1]
+Bus voltage angle [rad|deg]
+Angle in degrees for display purposes [deg]
+System base power [V.A|MV.A]
+Enable S_b in parameter list [:#(type=Boolean)]
+Base voltage of the bus [V|kV]
+Enable V_b in parameter list [:#(type=Boolean)]
+System frequency [Hz]
+Enable fn in parameter list [:#(type=Boolean)]
+Initial active power [W|MW]
+Enable P_0 in parameter list [:#(type=Boolean)]
+Initial reactive power [var|Mvar]
+Enable Q_0 in parameter list [:#(type=Boolean)]
+Initial voltage magnitude [1]
+Enable v_0 in parameter list [:#(type=Boolean)]
+Initial voltage angle [rad|deg]
+Enable angle_0 in parameter list [:#(type=Boolean)]
+Display power flow: [:#(type=Boolean)]
+Enable displayPF in parameter list [:#(type=Boolean)]
+Real part of the voltage [1]
+Imaginary part of the voltage [1]
+Real part of the current [1]
+Imaginary part of the current [1]
+Bus voltage magnitude [1]
+Bus voltage angle [rad|deg]
+Angle in degrees for display purposes [deg]
+System base power [V.A|MV.A]
+Enable S_b in parameter list [:#(type=Boolean)]
+Base voltage of the bus [V|kV]
+Enable V_b in parameter list [:#(type=Boolean)]
+System frequency [Hz]
+Enable fn in parameter list [:#(type=Boolean)]
+Initial active power [W|MW]
+Enable P_0 in parameter list [:#(type=Boolean)]
+Initial reactive power [var|Mvar]
+Enable Q_0 in parameter list [:#(type=Boolean)]
+Initial voltage magnitude [1]
+Enable v_0 in parameter list [:#(type=Boolean)]
+Initial voltage angle [rad|deg]
+Enable angle_0 in parameter list [:#(type=Boolean)]
+Display power flow: [:#(type=Boolean)]
+Enable displayPF in parameter list [:#(type=Boolean)]
+Real part of the voltage [1]
+Imaginary part of the voltage [1]
+Real part of the current [1]
+Imaginary part of the current [1]
+Bus voltage magnitude [1]
+Bus voltage angle [rad|deg]
+Angle in degrees for display purposes [deg]
+System base power [V.A|MV.A]
+Enable S_b in parameter list [:#(type=Boolean)]
+Base voltage of the bus [V|kV]
+Enable V_b in parameter list [:#(type=Boolean)]
+System frequency [Hz]
+Enable fn in parameter list [:#(type=Boolean)]
+Initial active power [W|MW]
+Enable P_0 in parameter list [:#(type=Boolean)]
+Initial reactive power [var|Mvar]
+Enable Q_0 in parameter list [:#(type=Boolean)]
+Initial voltage magnitude [1]
+Enable v_0 in parameter list [:#(type=Boolean)]
+Initial voltage angle [rad|deg]
+Enable angle_0 in parameter list [:#(type=Boolean)]
+Display power flow: [:#(type=Boolean)]
+Enable displayPF in parameter list [:#(type=Boolean)]
+Real part of the voltage [1]
+Imaginary part of the voltage [1]
+Real part of the current [1]
+Imaginary part of the current [1]
+Bus voltage magnitude [1]
+Bus voltage angle [rad|deg]
+Angle in degrees for display purposes [deg]
+System base power [V.A|MV.A]
+Enable S_b in parameter list [:#(type=Boolean)]
+Base voltage of the bus [V|kV]
+Enable V_b in parameter list [:#(type=Boolean)]
+System frequency [Hz]
+Enable fn in parameter list [:#(type=Boolean)]
+Initial active power [W|MW]
+Enable P_0 in parameter list [:#(type=Boolean)]
+Initial reactive power [var|Mvar]
+Enable Q_0 in parameter list [:#(type=Boolean)]
+Initial voltage magnitude [1]
+Enable v_0 in parameter list [:#(type=Boolean)]
+Initial voltage angle [rad|deg]
+Enable angle_0 in parameter list [:#(type=Boolean)]
+Display power flow: [:#(type=Boolean)]
+Enable displayPF in parameter list [:#(type=Boolean)]
+Real part of the voltage [1]
+Imaginary part of the voltage [1]
+Real part of the current [1]
+Imaginary part of the current [1]
+Bus voltage magnitude [1]
+Bus voltage angle [rad|deg]
+Angle in degrees for display purposes [deg]
+Real part of the current [1]
+Imaginary part of the current [1]
+Real part of the current [1]
+Imaginary part of the current [1]
+Resistance [1]
+Reactance [1]
+Shunt half conductance [1]
+Shunt half susceptance [1]
+System base power [V.A|MV.A]
+[s]
+[s]
+[:#(type=Integer)]
+Display power flow results: [:#(type=Boolean)]
+[W|MW]
+[W|MW]
+[var|Mvar]
+[var|Mvar]
+Real part of complex number [1]
+Imaginary part of complex number [1]
+Real part of complex number [1]
+Imaginary part of complex number [1]
+Real part of the current [1]
+Imaginary part of the current [1]
+Real part of the current [1]
+Imaginary part of the current [1]
+Resistance [1]
+Reactance [1]
+Shunt half conductance [1]
+Shunt half susceptance [1]
+System base power [V.A|MV.A]
+[s]
+[s]
+[:#(type=Integer)]
+Display power flow results: [:#(type=Boolean)]
+[W|MW]
+[W|MW]
+[var|Mvar]
+[var|Mvar]
+Real part of complex number [1]
+Imaginary part of complex number [1]
+Real part of complex number [1]
+Imaginary part of complex number [1]
+Real part of the current [1]
+Imaginary part of the current [1]
+Real part of the current [1]
+Imaginary part of the current [1]
+Resistance [1]
+Reactance [1]
+Shunt half conductance [1]
+Shunt half susceptance [1]
+System base power [V.A|MV.A]
+[s]
+[s]
+[:#(type=Integer)]
+Display power flow results: [:#(type=Boolean)]
+[W|MW]
+[W|MW]
+[var|Mvar]
+[var|Mvar]
+Real part of complex number [1]
+Imaginary part of complex number [1]
+Real part of complex number [1]
+Imaginary part of complex number [1]
+Real part of the current [1]
+Imaginary part of the current [1]
+Real part of the current [1]
+Imaginary part of the current [1]
+Resistance [1]
+Reactance [1]
+Shunt half conductance [1]
+Shunt half susceptance [1]
+System base power [V.A|MV.A]
+[s]
+[s]
+[:#(type=Integer)]
+Display power flow results: [:#(type=Boolean)]
+[W|MW]
+[W|MW]
+[var|Mvar]
+[var|Mvar]
+Real part of complex number [1]
+Imaginary part of complex number [1]
+Real part of complex number [1]
+Imaginary part of complex number [1]
+Real part of the current [1]
+Imaginary part of the current [1]
+Real part of the current [1]
+Imaginary part of the current [1]
+Resistance [1]
+Reactance [1]
+Shunt half conductance [1]
+Shunt half susceptance [1]
+System base power [V.A|MV.A]
+[s]
+[s]
+[:#(type=Integer)]
+Display power flow results: [:#(type=Boolean)]
+[W|MW]
+[W|MW]
+[var|Mvar]
+[var|Mvar]
+Real part of complex number [1]
+Imaginary part of complex number [1]
+Real part of complex number [1]
+Imaginary part of complex number [1]
+Real part of the current [1]
+Imaginary part of the current [1]
+Real part of the current [1]
+Imaginary part of the current [1]
+Resistance [1]
+Reactance [1]
+Shunt half conductance [1]
+Shunt half susceptance [1]
+System base power [V.A|MV.A]
+[s]
+[s]
+[:#(type=Integer)]
+Display power flow results: [:#(type=Boolean)]
+[W|MW]
+[W|MW]
+[var|Mvar]
+[var|Mvar]
+Real part of complex number [1]
+Imaginary part of complex number [1]
+Real part of complex number [1]
+Imaginary part of complex number [1]
+Real part of the current [1]
+Imaginary part of the current [1]
+Real part of the current [1]
+Imaginary part of the current [1]
+System base power [V.A|MV.A]
+Sending end bus voltage [V|kV]
+Power rating [V.A|MV.A]
+Voltage rating [V|kV]
+Resistance(transformer base) [1]
+Reactance(transformer base) [1]
+Optional fixed tap ratio
+Display power flow results: [:#(type=Boolean)]
+[W|MW]
+[W|MW]
+[var|Mvar]
+[var|Mvar]
+Transformer base impedance [Ohm]
+System base impedance [Ohm]
+Resistance (system base) [1]
+Reactance (system base) [1]
+Internal parameter to switch on the icon arrow [:#(type=Boolean)]
+Real part of the current [1]
+Imaginary part of the current [1]
+Real part of the current [1]
+Imaginary part of the current [1]
+System base power [V.A|MV.A]
+Sending end bus voltage [V|kV]
+Power rating [V.A|MV.A]
+Voltage rating [V|kV]
+Resistance(transformer base) [1]
+Reactance(transformer base) [1]
+Optional fixed tap ratio
+Display power flow results: [:#(type=Boolean)]
+[W|MW]
+[W|MW]
+[var|Mvar]
+[var|Mvar]
+Transformer base impedance [Ohm]
+System base impedance [Ohm]
+Resistance (system base) [1]
+Reactance (system base) [1]
+Internal parameter to switch on the icon arrow [:#(type=Boolean)]
+Real part of the current [1]
+Imaginary part of the current [1]
+Real part of the current [1]
+Imaginary part of the current [1]
+System base power [V.A|MV.A]
+Sending end bus voltage [V|kV]
+Power rating [V.A|MV.A]
+Voltage rating [V|kV]
+Resistance(transformer base) [1]
+Reactance(transformer base) [1]
+Optional fixed tap ratio
+Display power flow results: [:#(type=Boolean)]
+[W|MW]
+[W|MW]
+[var|Mvar]
+[var|Mvar]
+Transformer base impedance [Ohm]
+System base impedance [Ohm]
+Resistance (system base) [1]
+Reactance (system base) [1]
+Internal parameter to switch on the icon arrow [:#(type=Boolean)]
+System base power [V.A|MV.A]
+Enable S_b in parameter list [:#(type=Boolean)]
+Base voltage of the bus [V|kV]
+Enable V_b in parameter list [:#(type=Boolean)]
+System frequency [Hz]
+Enable fn in parameter list [:#(type=Boolean)]
+Initial active power [W|MW]
+Enable P_0 in parameter list [:#(type=Boolean)]
+Initial reactive power [var|Mvar]
+Enable Q_0 in parameter list [:#(type=Boolean)]
+Initial voltage magnitude [1]
+Enable v_0 in parameter list [:#(type=Boolean)]
+Initial voltage angle [rad|deg]
+Enable angle_0 in parameter list [:#(type=Boolean)]
+Display power flow: [:#(type=Boolean)]
+Enable displayPF in parameter list [:#(type=Boolean)]
+
+
+[:#(type=Boolean)]
+System base power [V.A|MV.A]
+Enable S_b in parameter list [:#(type=Boolean)]
+Base voltage of the bus [V|kV]
+Enable V_b in parameter list [:#(type=Boolean)]
+System frequency [Hz]
+Enable fn in parameter list [:#(type=Boolean)]
+Initial active power [W|MW]
+Enable P_0 in parameter list [:#(type=Boolean)]
+Initial reactive power [var|Mvar]
+Enable Q_0 in parameter list [:#(type=Boolean)]
+Initial voltage magnitude [1]
+Enable v_0 in parameter list [:#(type=Boolean)]
+Initial voltage angle [rad|deg]
+Enable angle_0 in parameter list [:#(type=Boolean)]
+Display power flow: [:#(type=Boolean)]
+Enable displayPF in parameter list [:#(type=Boolean)]
+Power rating [V.A|MV.A]
+Voltage rating [V|kV]
+Armature resistance [1]
+d-axis transient reactance [1]
+Mechanical starting time, 2H [Ws/VA] [s]
+Damping coefficient
+Rotor angle [rad|rad]
+der(Rotor angle) [rad/s]
+Rotor speed [pu] [1]
+der(Rotor speed [pu]) [s-1]
+Generator terminal voltage [pu] [1]
+Active power [pu] [1]
+Reactive power [pu] [1]
+Field voltage [pu] [1]
+Bus voltage angle [rad|deg]
+d-axis voltage [1]
+q-axis voltage [1]
+d-axis current [1]
+q-axis current [1]
+electrical power transmitted through the air-gap [1]
+field voltage on machine base [1]
+Base frequency in rad/s [rad/s]
+S(system base) -> S(machine base) [1]
+I(machine base) -> I(system base) [1]
+V(machine base) -> V(system base) [1]
+Z(machine base) -> Z(system base) [1]
+Initial active power generation in pu (system base) [1]
+Initial reactive power generation in pu (system base) [1]
+Real part of complex number
+Imaginary part of complex number
+Real part of complex number [1]
+Imaginary part of complex number [1]
+Real part of complex number
+Imaginary part of complex number
+Init. val. [1]
+Init. val. [1]
+Init. val. [1]
+Init. val. [1]
+used for setting the initial rotor angle [1]
+Init. val. rotor angle [rad|deg]
+Real part of complex number
+Imaginary part of complex number
+Real part of complex number
+Imaginary part of complex number
+Init. val. [1]
+Init. val. [1]
+Init. val. [1]
+Init. val. [1]
+Initial value (system base) [1]
+d-axis synchronous reactance [1]
+q-axis synchronous reactance [1]
+q-axis transient reactance [1]
+d-axis open circuit transient time constant [s]
+q-axis open circuit transient time constant [s]
+q-axis transient voltage [1]
+der(q-axis transient voltage) [s-1]
+d-axis transient voltage [1]
+der(d-axis transient voltage) [s-1]
+Initial value (system base) [1]
+Initialization [1]
+Initialization [1]
+[1]
+[1]
+regulator gain [1]
+regulator pole [s]
+Regulator zero [s]
+Field circuit time constant [s]
+Measurement time constant [s]
+[1]
+[s-1]
+[1]
+[s-1]
+[1]
+[s-1]
+Upper limits of input signals [1]
+Lower limits of input signals [1]
+= true, if strict limits with noEvent(..) [:#(type=Boolean)]
+Simplified model for homotopy-based initialization [:#(type=Modelica.Blocks.Types.LimiterHomotopy)]
+[1]
+[1]
+Constant output value [1]
+System base power [V.A|MV.A]
+Enable S_b in parameter list [:#(type=Boolean)]
+Base voltage of the bus [V|kV]
+Enable V_b in parameter list [:#(type=Boolean)]
+System frequency [Hz]
+Enable fn in parameter list [:#(type=Boolean)]
+Initial active power [W|MW]
+Enable P_0 in parameter list [:#(type=Boolean)]
+Initial reactive power [var|Mvar]
+Enable Q_0 in parameter list [:#(type=Boolean)]
+Initial voltage magnitude [1]
+Enable v_0 in parameter list [:#(type=Boolean)]
+Initial voltage angle [rad|deg]
+Enable angle_0 in parameter list [:#(type=Boolean)]
+Display power flow: [:#(type=Boolean)]
+Enable displayPF in parameter list [:#(type=Boolean)]
+
+
+[:#(type=Boolean)]
+System base power [V.A|MV.A]
+Enable S_b in parameter list [:#(type=Boolean)]
+Base voltage of the bus [V|kV]
+Enable V_b in parameter list [:#(type=Boolean)]
+System frequency [Hz]
+Enable fn in parameter list [:#(type=Boolean)]
+Initial active power [W|MW]
+Enable P_0 in parameter list [:#(type=Boolean)]
+Initial reactive power [var|Mvar]
+Enable Q_0 in parameter list [:#(type=Boolean)]
+Initial voltage magnitude [1]
+Enable v_0 in parameter list [:#(type=Boolean)]
+Initial voltage angle [rad|deg]
+Enable angle_0 in parameter list [:#(type=Boolean)]
+Display power flow: [:#(type=Boolean)]
+Enable displayPF in parameter list [:#(type=Boolean)]
+Power rating [V.A|MV.A]
+Voltage rating [V|kV]
+Armature resistance [1]
+d-axis transient reactance [1]
+Mechanical starting time, 2H [Ws/VA] [s]
+Damping coefficient
+Rotor angle [rad|rad]
+der(Rotor angle) [rad/s]
+Rotor speed [pu] [1]
+der(Rotor speed [pu]) [s-1]
+Generator terminal voltage [pu] [1]
+Active power [pu] [1]
+Reactive power [pu] [1]
+Field voltage [pu] [1]
+Bus voltage angle [rad|deg]
+d-axis voltage [1]
+q-axis voltage [1]
+d-axis current [1]
+q-axis current [1]
+electrical power transmitted through the air-gap [1]
+field voltage on machine base [1]
+Base frequency in rad/s [rad/s]
+S(system base) -> S(machine base) [1]
+I(machine base) -> I(system base) [1]
+V(machine base) -> V(system base) [1]
+Z(machine base) -> Z(system base) [1]
+Initial active power generation in pu (system base) [1]
+Initial reactive power generation in pu (system base) [1]
+Real part of complex number
+Imaginary part of complex number
+Real part of complex number [1]
+Imaginary part of complex number [1]
+Real part of complex number
+Imaginary part of complex number
+Init. val. [1]
+Init. val. [1]
+Init. val. [1]
+Init. val. [1]
+used for setting the initial rotor angle [1]
+Init. val. rotor angle [rad|deg]
+Real part of complex number
+Imaginary part of complex number
+Real part of complex number
+Imaginary part of complex number
+Init. val. [1]
+Init. val. [1]
+Init. val. [1]
+Init. val. [1]
+Initial value (system base) [1]
+d-axis synchronous reactance [1]
+q-axis synchronous reactance [1]
+q-axis transient reactance [1]
+d-axis open circuit transient time constant [s]
+q-axis open circuit transient time constant [s]
+q-axis transient voltage [1]
+der(q-axis transient voltage) [s-1]
+d-axis transient voltage [1]
+der(d-axis transient voltage) [s-1]
+Initial value (system base) [1]
+Initialization [1]
+Initialization [1]
+[1]
+[1]
+regulator gain [1]
+regulator pole [s]
+Regulator zero [s]
+Field circuit time constant [s]
+Measurement time constant [s]
+[1]
+[s-1]
+[1]
+[s-1]
+[1]
+[s-1]
+Upper limits of input signals [1]
+Lower limits of input signals [1]
+= true, if strict limits with noEvent(..) [:#(type=Boolean)]
+Simplified model for homotopy-based initialization [:#(type=Modelica.Blocks.Types.LimiterHomotopy)]
+[1]
+[1]
+Constant output value [1]
+System base power [V.A|MV.A]
+Enable S_b in parameter list [:#(type=Boolean)]
+Base voltage of the bus [V|kV]
+Enable V_b in parameter list [:#(type=Boolean)]
+System frequency [Hz]
+Enable fn in parameter list [:#(type=Boolean)]
+Initial active power [W|MW]
+Enable P_0 in parameter list [:#(type=Boolean)]
+Initial reactive power [var|Mvar]
+Enable Q_0 in parameter list [:#(type=Boolean)]
+Initial voltage magnitude [1]
+Enable v_0 in parameter list [:#(type=Boolean)]
+Initial voltage angle [rad|deg]
+Enable angle_0 in parameter list [:#(type=Boolean)]
+Display power flow: [:#(type=Boolean)]
+Enable displayPF in parameter list [:#(type=Boolean)]
+
+
+[:#(type=Boolean)]
+System base power [V.A|MV.A]
+Enable S_b in parameter list [:#(type=Boolean)]
+Base voltage of the bus [V|kV]
+Enable V_b in parameter list [:#(type=Boolean)]
+System frequency [Hz]
+Enable fn in parameter list [:#(type=Boolean)]
+Initial active power [W|MW]
+Enable P_0 in parameter list [:#(type=Boolean)]
+Initial reactive power [var|Mvar]
+Enable Q_0 in parameter list [:#(type=Boolean)]
+Initial voltage magnitude [1]
+Enable v_0 in parameter list [:#(type=Boolean)]
+Initial voltage angle [rad|deg]
+Enable angle_0 in parameter list [:#(type=Boolean)]
+Display power flow: [:#(type=Boolean)]
+Enable displayPF in parameter list [:#(type=Boolean)]
+Power rating [V.A|MV.A]
+Voltage rating [V|kV]
+Armature resistance [1]
+d-axis transient reactance [1]
+Mechanical starting time, 2H [Ws/VA] [s]
+Damping coefficient
+Rotor angle [rad|rad]
+der(Rotor angle) [rad/s]
+Rotor speed [pu] [1]
+der(Rotor speed [pu]) [s-1]
+Generator terminal voltage [pu] [1]
+Active power [pu] [1]
+Reactive power [pu] [1]
+Field voltage [pu] [1]
+Bus voltage angle [rad|deg]
+d-axis voltage [1]
+q-axis voltage [1]
+d-axis current [1]
+q-axis current [1]
+electrical power transmitted through the air-gap [1]
+field voltage on machine base [1]
+Base frequency in rad/s [rad/s]
+S(system base) -> S(machine base) [1]
+I(machine base) -> I(system base) [1]
+V(machine base) -> V(system base) [1]
+Z(machine base) -> Z(system base) [1]
+Initial active power generation in pu (system base) [1]
+Initial reactive power generation in pu (system base) [1]
+Real part of complex number
+Imaginary part of complex number
+Real part of complex number [1]
+Imaginary part of complex number [1]
+Real part of complex number
+Imaginary part of complex number
+Init. val. [1]
+Init. val. [1]
+Init. val. [1]
+Init. val. [1]
+used for setting the initial rotor angle [1]
+Init. val. rotor angle [rad|deg]
+Real part of complex number
+Imaginary part of complex number
+Real part of complex number
+Imaginary part of complex number
+Init. val. [1]
+Init. val. [1]
+Init. val. [1]
+Init. val. [1]
+Initial value (system base) [1]
+d-axis synchronous reactance [1]
+q-axis synchronous reactance [1]
+q-axis transient reactance [1]
+d-axis open circuit transient time constant [s]
+q-axis open circuit transient time constant [s]
+q-axis transient voltage [1]
+der(q-axis transient voltage) [s-1]
+d-axis transient voltage [1]
+der(d-axis transient voltage) [s-1]
+Initial value (system base) [1]
+Initialization [1]
+Initialization [1]
+[1]
+[1]
+regulator gain [1]
+regulator pole [s]
+Regulator zero [s]
+Field circuit time constant [s]
+Measurement time constant [s]
+[1]
+[s-1]
+[1]
+[s-1]
+[1]
+[s-1]
+Upper limits of input signals [1]
+Lower limits of input signals [1]
+= true, if strict limits with noEvent(..) [:#(type=Boolean)]
+Simplified model for homotopy-based initialization [:#(type=Modelica.Blocks.Types.LimiterHomotopy)]
+[1]
+[1]
+Constant output value [1]
+System base power [V.A|MV.A]
+Enable S_b in parameter list [:#(type=Boolean)]
+Base voltage of the bus [V|kV]
+Enable V_b in parameter list [:#(type=Boolean)]
+System frequency [Hz]
+Enable fn in parameter list [:#(type=Boolean)]
+Initial active power [W|MW]
+Enable P_0 in parameter list [:#(type=Boolean)]
+Initial reactive power [var|Mvar]
+Enable Q_0 in parameter list [:#(type=Boolean)]
+Initial voltage magnitude [1]
+Enable v_0 in parameter list [:#(type=Boolean)]
+Initial voltage angle [rad|deg]
+Enable angle_0 in parameter list [:#(type=Boolean)]
+Display power flow: [:#(type=Boolean)]
+Enable displayPF in parameter list [:#(type=Boolean)]
+Power rating [V.A|MV.A]
+Voltage magnitude [1]
+Voltage angle [rad|deg]
+Active power [1]
+Reactive power [1]
+Real part of the current [1]
+Imaginary part of the current [1]
+Change of base between Machine and System [1]
+maximum voltage [1]
+minimum voltage [1]
+force constant PQ-load, false may cause simulation problems [:#(type=Boolean)]
+System base power [V.A|MV.A]
+Enable S_b in parameter list [:#(type=Boolean)]
+Base voltage of the bus [V|kV]
+Enable V_b in parameter list [:#(type=Boolean)]
+System frequency [Hz]
+Enable fn in parameter list [:#(type=Boolean)]
+Initial active power [W|MW]
+Enable P_0 in parameter list [:#(type=Boolean)]
+Initial reactive power [var|Mvar]
+Enable Q_0 in parameter list [:#(type=Boolean)]
+Initial voltage magnitude [1]
+Enable v_0 in parameter list [:#(type=Boolean)]
+Initial voltage angle [rad|deg]
+Enable angle_0 in parameter list [:#(type=Boolean)]
+Display power flow: [:#(type=Boolean)]
+Enable displayPF in parameter list [:#(type=Boolean)]
+Power rating [V.A|MV.A]
+Voltage magnitude [1]
+Voltage angle [rad|deg]
+Active power [1]
+Reactive power [1]
+Real part of the current [1]
+Imaginary part of the current [1]
+Change of base between Machine and System [1]
+maximum voltage [1]
+minimum voltage [1]
+force constant PQ-load, false may cause simulation problems [:#(type=Boolean)]
+System base power [V.A|MV.A]
+Enable S_b in parameter list [:#(type=Boolean)]
+Base voltage of the bus [V|kV]
+Enable V_b in parameter list [:#(type=Boolean)]
+System frequency [Hz]
+Enable fn in parameter list [:#(type=Boolean)]
+Initial active power [W|MW]
+Enable P_0 in parameter list [:#(type=Boolean)]
+Initial reactive power [var|Mvar]
+Enable Q_0 in parameter list [:#(type=Boolean)]
+Initial voltage magnitude [1]
+Enable v_0 in parameter list [:#(type=Boolean)]
+Initial voltage angle [rad|deg]
+Enable angle_0 in parameter list [:#(type=Boolean)]
+Display power flow: [:#(type=Boolean)]
+Enable displayPF in parameter list [:#(type=Boolean)]
+Power rating [V.A|MV.A]
+Voltage magnitude [1]
+Voltage angle [rad|deg]
+Active power [1]
+Reactive power [1]
+Real part of the current [1]
+Imaginary part of the current [1]
+Change of base between Machine and System [1]
+maximum voltage [1]
+minimum voltage [1]
+force constant PQ-load, false may cause simulation problems [:#(type=Boolean)]
+
